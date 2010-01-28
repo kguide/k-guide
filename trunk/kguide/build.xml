@@ -44,6 +44,12 @@
         <pathelement path="${sdk-location}/tools/lib/jarutils.jar" />
     </path>
 
+    <!-- Added clean to the build file, tweak as needed -rgo -->
+    <target name="clean">
+      <delete dir="bin"/>
+      <delete dir="gen"/>
+    </target>
+
     <taskdef name="setup"
         classname="com.android.ant.SetupTask"
         classpathref="android.antlibs"/>
