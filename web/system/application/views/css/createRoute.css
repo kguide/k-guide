@@ -1,0 +1,66 @@
+#wrapper { 
+	width:600px; 
+	height:500px;
+}
+
+#mapList {
+ width:500px;
+ height:500px;
+}
+
+
+#mapWrap {
+ float:left; 
+}
+
+#listWrap {
+	float:left;
+}
+
+#inputFields {
+	width:600px; 
+}
+
+#map { 
+	width:500px; height:500px; 
+	width:500px; height:500px; 
+}
+
+
+
+#list { 
+	width:100px; 
+	height:200px;
+	list-style:none; 
+	padding:0; 
+}
+
+#list li { 
+	padding:10px;
+	border-bottom: 1px solid #000;
+}
+
+#list li:hover { 
+	background:#555; 
+	color:#fff; 
+	cursor:pointer; 
+	cursor:hand;
+}
+
+#message { 
+	position:absolute; 
+	padding:10px; 
+	background:#555; 
+	color:#fff; 
+	width:75px; 
+}
+
+.markerInfo {
+	color:#000;
+}
+
+#submitError {
+	color:#FF0000;
+	font-weight:bold;
+	font-size:12px;
+}

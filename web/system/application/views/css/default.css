@@ -1,0 +1,140 @@
+/* CSS Document */
+html {
+     overflow: -moz-scrollbars-vertical;
+     overflow: scroll;
+	 font-family:Helvetica, Arial, Geneva, sans-serif
+}
+
+body {
+background: url(../images/headerMainBg.jpg) repeat-x;
+background-color:#2E1C0E;
+}
+
+#header a {
+text-decoration:none;
+color: #ddd;
+}
+
+#header  a:hover {
+color: #3333;
+}
+
+a {
+text-decoration:none;
+color:#CC6600;
+}
+
+a:hover {
+text-decoration:underline;
+}
+
+h3 {
+ font:Arial, Helvetica, sans-serif;
+ color:#2D2B20;
+ font-weight:bold;
+ font-size:13pt;
+}
+
+
+#mainWrapper {
+max-width:850px;
+margin-left:auto;
+margin-right:auto;
+margin-top:-8px;
+}
+
+#header {
+background: url(../images/headerBg.jpg) no-repeat;
+height:122px;
+}
+
+#logo {
+ height:100px;
+ width:400px;
+ margin-top:25px;
+ margin-left: 22px;
+ position:absolute;
+}
+
+#menuBar {
+ color: #1f3a31;
+ height: 38px;
+ width:850px;
+ position:absolute;
+ margin-top:122px;
+}
+
+#loginButton {
+position: relative;
+float: right;
+margin-top: 6px;
+margin-right: 8px;
+font-weight: bold;
+}
+
+#contentWrapper {
+ background: url(../images/contentTopBorder.png) repeat-x;
+ background-color: #fff;
+ min-height: 300px;
+ margin-top: 50px;
+ padding-top:5px;
+ width:850px;
+}
+
+#sideBarWrapper {
+ position:relative;
+ float:left;
+ width:160px;
+}
+
+#leftSidebar {
+ background: url(../images/white.png) repeat;
+ border-right: 1px solid #000;
+ padding-left:5px;
+ padding-bottom:10px;
+ min-height:100px;
+ list-style:none; 
+}
+
+#content {
+  padding: 5px 5px 10px 10px;
+  width: 650px;
+  float:none;
+  margin-left:162px;
+  margin-top:3px;
+  position:relative;
+}
+
+#footerWrapper {
+  background: url(../images/footerBg.png) no-repeat;
+  height:50px;
+  text-align:center;
+  display:table-cell;
+  vertical-align:middle;
+  width: 850px;  
+  margin:0;
+  padding:0;
+}
+
+#footerText {
+	margin-top:-18px;
+	color:#fff;
+	font-weight:bold;
+}
+
+#footerText a:hover {
+	text-decoration:none;
+}
+
+p.error {
+	color: red;
+}
+
+.paddedColumn {
+	padding-left:15px;
+	text-align:center;
+}
+
+.highlightRow:hover  {
+	background: #EEDCB0;
+}
