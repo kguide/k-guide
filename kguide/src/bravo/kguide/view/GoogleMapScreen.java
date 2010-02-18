@@ -1,12 +1,10 @@
 package bravo.kguide.view;
 
 import bravo.kguide.control.Controller;
-import bravo.kguide.view.MapWidgets;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import android.graphics.Point;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,15 +14,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.graphics.Canvas; 
 import android.graphics.Paint; 
 import android.graphics.Bitmap; 
-import android.graphics.BitmapFactory; 
-import android.graphics.Paint.Style; 
-import android.graphics.Color;
 
 
 import com.google.android.maps.GeoPoint;
@@ -33,7 +26,6 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
-import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.OverlayItem;
  
 public class GoogleMapScreen extends MapActivity 
@@ -42,6 +34,7 @@ public class GoogleMapScreen extends MapActivity
     public static final int PLAYER_POS_ID = Menu.FIRST;
     public static final int HELP_ID = Menu.FIRST+1;
     public static final int CURRENT_POS_ID = Menu.FIRST+2;
+    
     
   
     Controller ctrl = Controller.getInstance();
@@ -54,6 +47,8 @@ public class GoogleMapScreen extends MapActivity
     private OurOverlay ourOverlay;
     private OurOverlay oldHint;
     private MapOverlay playerPos;
+
+    private MapWidgets myWidget;
     
     private LocationManager locationManager=null;
     private LocationListener locationListener=null;
@@ -133,57 +128,18 @@ public class GoogleMapScreen extends MapActivity
 	private int animcounter;
 	private long deltaTimer;
 
-	private Point mp1 = new Point();
-	private Point mp2 = new Point();
-	private Paint myPaint = new Paint();
 
 	public MapOverlay() {
 	    animcounter = 0;
 	    deltaTimer = 0;
-	    myPaint = new Paint();
 	}
         @Override
 	public void draw(Canvas canvas, MapView mapView, 
 			 boolean shadow) 
         {
 	    super.draw(canvas, mapView, shadow);
-	    
-	    myPaint.setStyle(Paint.Style.STROKE); 
-
-	    myPaint.setARGB(255,0,0,0); 
-	    myPaint.setAntiAlias(true);
-	    myPaint.setTextSize(22); 
-	    myPaint.setStyle(Style.FILL);
+	    myWidget.drawComplex(canvas,mapView);
 	   
-            
-	    
-	    for (int u = 1; u < ctrl.routeList.current.routePath.size();u++) {
-		mapView.getProjection().toPixels(ctrl.routeList.current.routePath.get(u-1).p, mp1);		
-		mapView.getProjection().toPixels(ctrl.routeList.current.routePath.get(u).p, mp2);
-		myPaint.setColor(Color.BLUE);
-		myPaint.setStrokeWidth(1); 
-		canvas.drawCircle(mp2.x,mp2.y, 2, myPaint); 
-		canvas.drawCircle(mp2.x,mp2.y, 1, myPaint); 
-
-		myPaint.setStrokeWidth(6); 
-		canvas.drawLine(mp1.x,mp1.y,mp2.x,mp2.y,myPaint);
-	    }
-
-	    for (int u = 1; u < ctrl.routeList.current.routePath.size();u++) {
-		mapView.getProjection().toPixels(ctrl.routeList.current.routePath.get(u-1).p, mp1);		
-		mapView.getProjection().toPixels(ctrl.routeList.current.routePath.get(u).p, mp2);
-		myPaint.setStrokeWidth(2); 
-		myPaint.setColor(Color.YELLOW);
-		canvas.drawLine(mp1.x,mp1.y,mp2.x,mp2.y,myPaint);
-	    }
-
-
-	    
-	    myPaint.setARGB(160,200,250,35); 
-	    canvas.drawText(ctrl.routeList.current.routeName, 10,20, myPaint);
-	    myPaint.setARGB(200,0,0,35); 
- 	    canvas.drawText(ctrl.routeList.current.routeName, 12,22, myPaint); 
-
         }
     }
 
@@ -219,7 +175,7 @@ public class GoogleMapScreen extends MapActivity
 	
 	// ourOverlay.addItem(new OverlayItem(p,"hint",controller.game.getCurrentHintText()));
 
-	
+	myWidget = new MapWidgets();
 	List<Overlay> listOfOverlays = mapView.getOverlays();
 	listOfOverlays.clear();
 	// listOfOverlays.add(ourOverlay);
