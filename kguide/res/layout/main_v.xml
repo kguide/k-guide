@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="320px"
+    android:layout_height="480px"
+    android:background="@drawable/v_main_bg"
+    >    
+ 
+<ImageButton 
+ 	android:id="@+id/v_main_b01_continue" 
+ 	android:background="@drawable/v_main_b01"
+ 	android:layout_width="254px" 
+ 	android:layout_height="29px"
+    android:layout_marginLeft="33px"
+    android:layout_marginTop="240px"
+    android:focusableInTouchMode="true"
+ 	>
+</ImageButton>
+ 
+<ImageButton 
+ 	android:id="@+id/v_main_b02_selectroute" 
+ 	android:background="@drawable/v_main_b02"
+ 	android:layout_width="254px" 
+ 	android:layout_height="29px"
+    android:layout_marginLeft="33px"
+    android:layout_marginTop="2px"
+ 	>
+</ImageButton>
+
+<ImageButton 
+ 	android:id="@+id/v_main_b03_showmap" 
+ 	android:background="@drawable/v_main_b03"
+ 	android:layout_width="254px" 
+ 	android:layout_height="29px"
+    android:layout_marginLeft="33px"
+    android:layout_marginTop="2px"
+ 	>
+</ImageButton>
+
+<ImageButton 
+ 	android:id="@+id/v_main_b04_settings" 
+ 	android:background="@drawable/v_main_b04"
+ 	android:layout_width="254px" 
+ 	android:layout_height="29px"
+    android:layout_marginLeft="33px"
+    android:layout_marginTop="2px"
+ 	>
+</ImageButton>
+
+<ImageButton 
+ 	android:id="@+id/v_main_b05_help" 
+ 	android:background="@drawable/v_main_b05"
+ 	android:layout_width="254px" 
+ 	android:layout_height="29px"
+    android:layout_marginLeft="33px"
+    android:layout_marginTop="2px"
+ 	>
+</ImageButton>
+
+<ImageButton 
+ 	android:id="@+id/v_main_b06_quit" 
+ 	android:background="@drawable/v_main_b06"
+ 	android:layout_width="254px" 
+ 	android:layout_height="29px"
+    android:layout_marginLeft="33px"
+    android:layout_marginTop="2px"
+ 	>
+</ImageButton>
+ 
+ </LinearLayout>
