@@ -1,0 +1,14 @@
+
+This is our scratchpad, post anything in here which might be interesting to the team.
+
+
+= Helpful pages =
+
+If you find any website that is helpful post it here
+  * http://vkroz.wordpress.com/
+    ** Lots of stuff regarding Android, debugging etc.
+
+
+= Thoughts =
+
+Post any thoughts here which could improve the kGuide.
