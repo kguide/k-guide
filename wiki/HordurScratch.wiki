@@ -10,9 +10,11 @@ $ adb [-s <AVD name>] shell
 # sqlite3 /data/data/<application package name>/databases/<database name>
 
 Example:
+<pre>
 >adb shell
 $ sqlite3 /data/data/com.kroz.app/databases/mydatabase.db
 sqlite3 /data/data/com.kroz.app/databases/mydatabase.db
 SQLite version 3.5.9
 Enter ".help" for instructions
 sqlite>
+</pre>
