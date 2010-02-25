@@ -5,12 +5,12 @@ Thoughts, bits & pieces of interesting or helpful things for what I´m doing
 = ADB Sqlite debugging =
 
 Cool way to access the sqlite database
-
+<pre>
 $ adb [-s <AVD name>] shell
 # sqlite3 /data/data/<application package name>/databases/<database name>
 
 Example:
-<pre>
+
 >adb shell
 $ sqlite3 /data/data/com.kroz.app/databases/mydatabase.db
 sqlite3 /data/data/com.kroz.app/databases/mydatabase.db
