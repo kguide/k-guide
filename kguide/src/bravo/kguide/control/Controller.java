@@ -1,14 +1,14 @@
 package bravo.kguide.control;
 
-import bravo.kguide.control.RouteList;
+import android.content.Context;
+import bravo.kguide.data.DataAccess;
 import bravo.kguide.data.ServerConnection;
-import java.util.ArrayList;
 
 
 public class Controller {
     public RouteList routeList = new RouteList();
     public ServerConnection server;
-    
+    public DataAccess dal;
     //Singleton creation of control
     protected Controller() {}  // private so other classes can't instantiate 
     static private Controller INSTANCE = null;
@@ -24,12 +24,11 @@ public class Controller {
     }
     //Singleton part ends
 
-    public void initData() {
-	routeList.addRoute(server.getRouteOnServer(3));
-	routeList.addRoute(server.getRouteOnServer(4));
-	routeList.addRoute(server.getRouteOnServer(5));
-	routeList.addRoute(server.getRouteOnServer(6));
-	
-    }
-
+    public void initData(Context context) {
+    	dal = new DataAccess(context);
+		routeList.addRoute(dal.getRoute(3,false));
+		routeList.addRoute(dal.getRoute(4,false));
+		routeList.addRoute(dal.getRoute(5,false));
+		routeList.addRoute(dal.getRoute(6,false));	
+    }    
 }

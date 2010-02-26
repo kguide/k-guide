@@ -15,7 +15,9 @@
       </intent-filter>
     </activity>	
     
-    <activity android:name=".GoogleMapScreen" android:label="@string/app_name">
+    <activity 	android:name=".GoogleMapScreen" 
+    			android:label="@string/app_name"
+    			android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
     </activity>
     
   </application>
