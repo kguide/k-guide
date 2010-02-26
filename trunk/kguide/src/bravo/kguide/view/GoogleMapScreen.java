@@ -148,71 +148,68 @@ public class GoogleMapScreen extends MapActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-	ctrl.initData();
-	// Begin Display Map  
-	//----------------------------------------------------------------------------------------------------------
-	setContentView(R.layout.google_maps);
-	
-	mapView = (MapView) findViewById(R.id.googleMapsMapview);
-	mapView.setBuiltInZoomControls(true);   	
-        mapController = mapView.getController();
-	
-	// Get the first coordinate and move the map to it.
-	//******************************************************************************************************
-	// Central reykjavik.
-	playerPosition = new GeoPoint((int) (64.13674367070412 * 1E6), 
-				      (int) (-21.923303604125977 * 1E6));
-
-	mapController.animateTo(playerPosition);
-	mapController.setZoom(15);
-	//******************************************************************************************************
-	//----------------------------------------------------------------------------------------------------------
-	
-	
-	// Add icon for first coordinate location 
-	//----------------------------------------------------------------------------------------------------------
-	playerPos = new MapOverlay();
-	
-	// ourOverlay.addItem(new OverlayItem(p,"hint",controller.game.getCurrentHintText()));
-
-	myWidget = new MapWidgets();
-	List<Overlay> listOfOverlays = mapView.getOverlays();
-	listOfOverlays.clear();
-	// listOfOverlays.add(ourOverlay);
-	// listOfOverlays.add(oldHint);
-	listOfOverlays.add(playerPos);
-     
+		ctrl.initData(context);
+		// Begin Display Map  
+		//----------------------------------------------------------------------------------------------------------
+		setContentView(R.layout.google_maps);
 		
-	mapView.invalidate();
+		mapView = (MapView) findViewById(R.id.googleMapsMapview);
+		mapView.setBuiltInZoomControls(true);   	
+	        mapController = mapView.getController();
+		
+		// Get the first coordinate and move the map to it.
+		//******************************************************************************************************
+		// Central reykjavik.
+		playerPosition = new GeoPoint((int) (64.13674367070412 * 1E6), 
+					      (int) (-21.923303604125977 * 1E6));
 	
-	//End Display Map           
+		mapController.animateTo(playerPosition);
+		mapController.setZoom(15);
+		//******************************************************************************************************
+		//----------------------------------------------------------------------------------------------------------
+		
+		
+		// Add icon for first coordinate location 
+		//----------------------------------------------------------------------------------------------------------
+		playerPos = new MapOverlay();
+		
+		// ourOverlay.addItem(new OverlayItem(p,"hint",controller.game.getCurrentHintText()));
 	
-	// Set up the location listener to listen for new GPS locations
-	locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-	locationListener = new MyLocationListener();
-	locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 100,locationListener);
-	
-	// Display the Welcome text.
+		myWidget = new MapWidgets();
+		List<Overlay> listOfOverlays = mapView.getOverlays();
+		listOfOverlays.clear();
+		// listOfOverlays.add(ourOverlay);
+		// listOfOverlays.add(oldHint);
+		listOfOverlays.add(playerPos);
+	     
+			
+		mapView.invalidate();
+		
+		//End Display Map           
+		
+		// Set up the location listener to listen for new GPS locations
+		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		locationListener = new MyLocationListener();
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 100,locationListener);
     }
     
     private class MyLocationListener implements LocationListener {
-	public void onLocationChanged(Location location) {
-	    currLat = location.getLatitude();
-	    currLong = location.getLongitude();
-
-	    playerPosition = new GeoPoint((int) (currLat * 1E6), 
-					  (int) (currLong * 1E6));
-		    
-	}
+		public void onLocationChanged(Location location) {
+		    currLat = location.getLatitude();
+		    currLong = location.getLongitude();
 	
-	
-	public void onProviderDisabled(String provider) {
-	}	
-	public void onProviderEnabled(String provider) {
-	}
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-	}
-	
+		    playerPosition = new GeoPoint((int) (currLat * 1E6), 
+						  (int) (currLong * 1E6));
+			    
+		}
+		
+		
+		public void onProviderDisabled(String provider) {
+		}	
+		public void onProviderEnabled(String provider) {
+		}
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
     }
     
     @Override
