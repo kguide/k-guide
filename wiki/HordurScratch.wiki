@@ -1,6 +1,5 @@
-#summary One-sentence summary of this page.
-Thoughts, bits & pieces of interesting or helpful things for what I´m doing
-= Introduction =
+#A memo for me
+
 
 = ADB Sqlite debugging =
 
