@@ -18,7 +18,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.graphics.Paint; 
 import android.graphics.Bitmap; 
+import android.graphics.BitmapFactory; 
 
+import android.graphics.Point;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
@@ -124,14 +126,17 @@ public class GoogleMapScreen extends MapActivity
     class MapOverlay extends com.google.android.maps.Overlay
     {
 	private List<Bitmap> items;
-       
 	private int animcounter;
 	private long deltaTimer;
+	private Bitmap walker = BitmapFactory.decodeResource(getResources(), R.drawable.overlay_user_walk);
+	Point screenPts;
 
 
 	public MapOverlay() {
 	    animcounter = 0;
 	    deltaTimer = 0;
+	    screenPts = new Point();
+
 	}
         @Override
 	public void draw(Canvas canvas, MapView mapView, 
@@ -139,7 +144,8 @@ public class GoogleMapScreen extends MapActivity
         {
 	    super.draw(canvas, mapView, shadow);
 	    myWidget.drawComplex(canvas,mapView);
-	   
+	    mapView.getProjection().toPixels(playerPosition, screenPts);
+	    canvas.drawBitmap(walker, screenPts.x-8, screenPts.y-8, null); 
         }
     }
 
