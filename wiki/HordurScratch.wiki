@@ -3,7 +3,7 @@
 = Introduction =
 
 
-= ADB Sqlite debugging =
+== ADB Sqlite debugging ==
 
 Cool way to access the sqlite database
 <pre>
@@ -19,3 +19,7 @@ SQLite version 3.5.9
 Enter ".help" for instructions
 sqlite>
 </pre>
+
+== Other stuff ==
+Ugly "service" icons used in iceland, could be okay as a placeholder icons on our map 
+http://new.bergnes.is/img/merki/merki_E.png
