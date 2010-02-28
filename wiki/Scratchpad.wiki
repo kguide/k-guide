@@ -8,7 +8,7 @@ If you find any website that is helpful post it here
     ** Lots of stuff regarding Android, debugging etc.
   * <a href="http://brainflush.wordpress.com/2009/03/15/understanding-android-themes-and-styles/"> Understanding android themes and styles</a>
     ** Really helpful information about themes and styles
-
+    ** <a href="http://whyandroid.com/android/182-fancy-listviews-part-one.html"> for even better understanding view this </a>
 
 = Thoughts =
 
