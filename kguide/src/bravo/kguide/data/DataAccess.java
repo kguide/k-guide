@@ -2,6 +2,7 @@ package bravo.kguide.data;
 
 import android.content.Context;
 import android.util.Log;
+import bravo.kguide.control.RouteList;
 import bravo.kguide.control.Routes;
 
 public class DataAccess {
@@ -49,5 +50,18 @@ public class DataAccess {
 			jsonReply = this.getRouteJsonFromDB(routeId);
 			return Toolbox.createRouteFromJSON(routeId, jsonReply);
 		}
+	}
+	
+	/**
+	 * @param start: The 
+	 * @param offset: The offset of the items to be fetched
+	 * @return Arraylist containing Routes with name and id info
+	 */
+	public RouteList getRouteSelectionList(int limit,int offset){
+		String jsonRouteList = ServerConnection.getRouteListFromServer(limit, offset);
+		Log.v("DAL",jsonRouteList);
+		RouteList r = Toolbox.createRouteSelectionList(jsonRouteList);
+		Log.v("DAL","Number of items in sel.list"+r.routes.size());
+		return r;
 	}
 }

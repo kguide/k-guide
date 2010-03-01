@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import com.google.android.maps.GeoPoint;
 
 public class Routes {
-
 	
 	public final int MEDIA_TEXT = 1;
 	public final int MEDIA_PHOTO = 2;
@@ -25,15 +24,16 @@ public class Routes {
     	routePath.add(new Coordinate(currentLatitude, currentLongitude));
     }
 
-   
-    
     public class Coordinate {	
     	public GeoPoint p;	
     	
     	public Coordinate(double latitude, double longitude){
 		    p = new GeoPoint((int) (latitude * 1E6),(int) (longitude * 1E6));
-		    
     	}
+    }
+    
+    public String toString(){
+    	return routeName;
     }
 }
 

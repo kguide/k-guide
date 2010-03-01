@@ -1,0 +1,7 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/select_route_c"
+          android:title="@string/select_route"/>
+    <item android:id="@+id/return_c"
+          android:title="@string/back"/>
+          
+</menu>

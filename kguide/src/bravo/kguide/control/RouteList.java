@@ -23,38 +23,41 @@ public class RouteList {
     }
 
     public Routes nextRoute(){
-	if (routes.isEmpty())  {
-	    return null;
-	}
-	routeIndex = ++routeIndex % routes.size();
-	current = routes.get(routeIndex);
-	return current;
+		if (routes.isEmpty())  {
+		    return null;
+		}
+		routeIndex = ++routeIndex % routes.size();
+		current = routes.get(routeIndex);
+		return current;
     }
     
     public void prevRoute(){
-	if (routes.isEmpty())  {
-	    current = null;
-	    return;
-	}
-	routeIndex = routeIndex == 0 ? routes.size()-1 : --routeIndex % routes.size();
-	current = routes.get(routeIndex);
+		if (routes.isEmpty())  {
+		    current = null;
+		    return;
+		}
+		routeIndex = routeIndex == 0 ? routes.size()-1 : --routeIndex % routes.size();
+		current = routes.get(routeIndex);
     }
 
     public void removeRoute(){
-	if (routes.isEmpty())  {
-	    current = null;
-	    return;
-	}
-	current = routes.remove(routeIndex);
+		if (routes.isEmpty())  {
+		    current = null;
+		    return;
+		}
+		current = routes.remove(routeIndex);
     }
 
     public void addRoute(Routes route){
-	routes.add(route);
-	current = routes.get(routeIndex);
+		routes.add(route);
+		current = routes.get(routeIndex);
     }
 
     public void getCurrent(){
-	current = routes.get(routeIndex);
+    	current = routes.get(routeIndex);
     }
-
-} // RouteList
+    
+    public ArrayList<Routes> getArrayList(){
+    	return routes;
+    }
+}

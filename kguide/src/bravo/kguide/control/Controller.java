@@ -1,5 +1,7 @@
 package bravo.kguide.control;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import bravo.kguide.data.DataAccess;
 import bravo.kguide.data.ServerConnection;
@@ -17,13 +19,12 @@ public class Controller {
      * @return The unique instance of this class.
      */
     static public Controller getInstance() {  
-	if(null == INSTANCE) {
-	    INSTANCE = new Controller();
-	}
-	return INSTANCE;
+		if(null == INSTANCE) {
+		    INSTANCE = new Controller();
+		}
+		return INSTANCE;
     }
     //Singleton part ends
-
     public void initData(Context context) {
     	dal = new DataAccess(context);
 		routeList.addRoute(dal.getRoute(3,false));
@@ -31,4 +32,14 @@ public class Controller {
 		routeList.addRoute(dal.getRoute(5,false));
 		routeList.addRoute(dal.getRoute(6,false));	
     }    
+
+    public void addRouteToList(Context context,int routeId){
+    	dal = new DataAccess(context);
+    	routeList.addRoute(dal.getRoute(routeId, false));
+    }
+    
+    public RouteList getRouteSelectionList(Context context,int limit,int offset){
+    	dal = new DataAccess(context);
+    	return dal.getRouteSelectionList(limit,offset);    	
+    }
 }

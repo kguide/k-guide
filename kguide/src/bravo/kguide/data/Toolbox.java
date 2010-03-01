@@ -1,9 +1,12 @@
 package bravo.kguide.data;
 
+import java.util.ArrayList;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import bravo.kguide.control.RouteList;
 import bravo.kguide.control.Routes;
 
 public class Toolbox {
@@ -23,14 +26,28 @@ public class Toolbox {
 			double currentLatitude = Double.parseDouble(latArray.getString(i));
 			double currentLongitude = Double.parseDouble(lngArray.getString(i));
 			route.addCoordinate(currentLatitude,currentLongitude);
-		    }
-		    
-		    return route;
-		    
+		    }		    
+		    return route;		    
 		} catch (JSONException e) {
 		    e.printStackTrace();
 		    return null;
 		}	
-    	
+    }
+    
+    public static RouteList createRouteSelectionList(String jsonString){
+    	RouteList routeList = new RouteList();
+    	try{
+	    	JSONObject jsonObject = new JSONObject(jsonString);
+	    	JSONArray routeIdArray = jsonObject.getJSONArray("routeId");
+	    	JSONArray routeNameArray = jsonObject.getJSONArray("name");
+	    	for(int i=0; i<routeIdArray.length();i++){
+	    		Routes route = new Routes(routeIdArray.getInt(i),routeNameArray.getString(i));
+	    		routeList.addRoute(route);
+	    	}
+		} catch (JSONException e) {
+		    e.printStackTrace();
+		    return null;
+		}
+    	return routeList;    	
     }
 }
