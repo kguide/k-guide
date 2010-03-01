@@ -1,0 +1,16 @@
+<?xml  version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="MyListView" parent="@android:style/Widget.ListView">
+		<item name="android:layout_width">254px</item>
+        <item name="android:layout_height">450px</item>
+        <item name="android:layout_marginTop">62px</item>
+        <item name="android:layout_marginLeft">33px</item>
+	</style>
+	
+	<style name="routeSelectLi" parent="@android:style/TextAppearance.Medium">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+		<item name="android:textColor">#FFFFFF</item>
+		<item name="android:textSize">16sp</item>	
+	</style>
+</resources>

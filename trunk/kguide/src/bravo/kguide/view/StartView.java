@@ -22,13 +22,13 @@ public class StartView extends Activity {
 	    		Intent startGoogleMapScreen = new Intent(StartView.this,GoogleMapScreen.class);
 	    		startActivity(startGoogleMapScreen);    			
 	    	}
-	    
 	    });
 	    
 	    ImageButton selectRoute = (ImageButton)findViewById(R.id.v_main_b02_selectroute);
 	    selectRoute.setOnClickListener(new ImageButton.OnClickListener(){
 	    	public void onClick(View v){
-	    		; //does nothing at the moment
+	    		Intent startSelectRouteScreen = new Intent(StartView.this,RouteSelection.class);
+	    		startActivity(startSelectRouteScreen);
 	    	}
 	    });
 	    
@@ -42,7 +42,8 @@ public class StartView extends Activity {
 	    ImageButton settings = (ImageButton)findViewById(R.id.v_main_b04_settings);
 	    settings.setOnClickListener(new ImageButton.OnClickListener(){
 	    	public void onClick(View v){
-	    		; //does nothing at the moment
+	    		Intent startSettingsScreen = new Intent(StartView.this,SettingsScreen.class);
+	    		startActivity(startSettingsScreen);
 	    	}
 	    });
 	    

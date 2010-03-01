@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/previous_route_sel_o"
+          android:title="@string/previous"/>
+
+    <item android:id="@+id/more_route_sel_o"
+          android:title="@string/next"
+          android:background="#000000"/>
+          
+    <item android:id="@+id/filter_route_sel_o"
+    	  android:title="@string/filter"/>
+    	  
+    <item android:id="@+id/back_route_sel_o"
+    	  android:title="@string/back"/>
+</menu>
