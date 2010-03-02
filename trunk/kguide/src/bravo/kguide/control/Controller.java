@@ -1,8 +1,7 @@
 package bravo.kguide.control;
 
-import java.util.ArrayList;
-
 import android.content.Context;
+import android.util.Log;
 import bravo.kguide.data.DataAccess;
 import bravo.kguide.data.ServerConnection;
 
@@ -26,20 +25,45 @@ public class Controller {
     }
     //Singleton part ends
     public void initData(Context context) {
-    	dal = new DataAccess(context);
-		routeList.addRoute(dal.getRoute(3,false));
-		routeList.addRoute(dal.getRoute(4,false));
-		routeList.addRoute(dal.getRoute(5,false));
-		routeList.addRoute(dal.getRoute(6,false));	
+    	// Need to load every route locally stored (but not if it has already been done)
+   		this.loadInitialMapInfo(context);
     }    
 
-    public void addRouteToList(Context context,int routeId){
+    /**
+     * Checks if the phone has any routes stored
+     * @param context
+     * @return
+     */
+    public boolean hasRoutesOnPhone(Context context){
     	dal = new DataAccess(context);
-    	routeList.addRoute(dal.getRoute(routeId, false));
+    	boolean exists = dal.hasRoutesOnPhone();
+    	dal.closeDatabase();
+    	return exists;
+
     }
     
-    public RouteList getRouteSelectionList(Context context,int limit,int offset){
+    // lack the case when items have already been loaded
+    public void loadInitialMapInfo(Context context){
+    	if(routeList.routes.size()==0){
+	    	dal = new DataAccess(context);
+	    	int intArray[] = dal.getLocalRouteIdArray();
+	    	Log.v("Controller", "loadMapInfo idArray size "+intArray.length);
+	    	for(int id : intArray){
+	    		routeList.addRoute(dal.getRoute(id));
+	    	}
+	    	Log.v("Controller",routeList.toString());
+	    	dal.closeDatabase();
+    	}
+    }
+    
+    public void addRouteToList(Context context,int routeId){
+    	this.loadInitialMapInfo(context);
     	dal = new DataAccess(context);
-    	return dal.getRouteSelectionList(limit,offset);    	
+    	routeList.addRoute(dal.getRoute(routeId));
+    	Log.v("Controller", "addRouteToList now routelist has:"+routeList.routes.size());
+    }
+    
+    public RouteList getRouteSelectionList(int limit,int offset){
+    	return DataAccess.getRouteSelectionList(limit,offset);    	
     }
 }

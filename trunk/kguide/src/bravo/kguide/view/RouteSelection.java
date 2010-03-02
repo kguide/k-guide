@@ -14,8 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem.OnMenuItemClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import bravo.kguide.control.Controller;
 import bravo.kguide.control.Routes;
 
@@ -24,8 +26,9 @@ public class RouteSelection extends ListActivity {
 	Context context = this;
 
 	private ListView listView;
-	private int limit=4,offset=0;
+	private int limit=10,offset=0;
 	private ArrayList<Routes> routeList;
+	
 	//### Indexes for the Options menu buttons ####/
 	final int QUIT_OB = 3;
 	final int FILTER_OB = 2;
@@ -35,7 +38,7 @@ public class RouteSelection extends ListActivity {
 	//### Indexes for the Context menu buttons ####/
 	final int SELECT_ROUTE_CM = 0;
 	
-	
+	int longSelectedRoute;
 	private MenuItem prev,more,filter,back;
 	
 	@Override
@@ -47,6 +50,18 @@ public class RouteSelection extends ListActivity {
 		Log.v("RouteSelection","onCreate called");
 		listView = this.getListView();
 		listView.setDrawingCacheEnabled(false);
+		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				longSelectedRoute = arg2;
+				Log.v("RouteSelection", ""+arg2);
+				return false;
+			}
+
+		});
+		
 		registerForContextMenu(listView);
 		populateListView();
 	}
@@ -56,7 +71,7 @@ public class RouteSelection extends ListActivity {
 	 */
 	private void populateListView(){
 		try{
-			routeList = controller.getRouteSelectionList(context,limit,offset).getArrayList();
+			routeList = controller.getRouteSelectionList(limit,offset).getArrayList();
 			// Load items into the listview
 			if(routeList.size() > 0){
 				setListAdapter(new ArrayAdapter<Routes>(this,
@@ -147,45 +162,22 @@ public class RouteSelection extends ListActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
+		
 		MenuInflater inflater = new MenuInflater(context);
 		inflater.inflate(R.drawable.route_select_cm, menu);
 		MenuItem selectRoute = menu.getItem(this.SELECT_ROUTE_CM);
 		Intent startRoute = new Intent(RouteSelection.this,GoogleMapScreen.class);
 		selectRoute.setIntent(startRoute);
-		
-		
 		selectRoute.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
-				int routeId = (int)listView.getSelectedItemId();
-				routeId = routeList.get(routeId).routeId;
+				Log.v("RouteSelection", "Item selected: "+longSelectedRoute);
+				int routeId = routeList.get(longSelectedRoute).routeId;
 				controller.addRouteToList(context, routeId);
-//				item.geti
-//				controller.routeList.addRoute(route);
 				return false;
 			}
 		});
 	}
 	
-	@Override
-	public void openContextMenu(View view) {
-		super.openContextMenu(view);
-		// TODO Auto-generated method stub
-		super.openContextMenu(view);
-	}
-
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		super.onContextItemSelected(item);
-		// TODO Auto-generated method stub
-		return super.onContextItemSelected(item);
-	}
-
-	@Override
-	public void onContextMenuClosed(Menu menu) {
-		super.onContextMenuClosed(menu);
-		// TODO Auto-generated method stub
-		super.onContextMenuClosed(menu);
-	}
 }

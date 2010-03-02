@@ -60,4 +60,13 @@ public class RouteList {
     public ArrayList<Routes> getArrayList(){
     	return routes;
     }
+    
+    public String toString(){
+    	String info = "";
+    	for(int i=0;i<routes.size();i++){
+    		info += " Has route: "+routes.get(i).routeId+" ";
+    	}
+    	
+    	return info;
+    }
 }
