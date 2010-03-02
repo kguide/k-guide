@@ -45,7 +45,7 @@ public class RouteList {
 		    current = null;
 		    return;
 		}
-		current = routes.remove(routeIndex);
+		routes.remove(routeIndex);
     }
 
     public void addRoute(Routes route){
@@ -54,6 +54,9 @@ public class RouteList {
     }
 
     public void getCurrent(){
+	if (routes == null) {
+	    return;
+	}
     	current = routes.get(routeIndex);
     }
     
@@ -63,10 +66,11 @@ public class RouteList {
     
     public String toString(){
     	String info = "";
-    	for(int i=0;i<routes.size();i++){
+	if (routes != null) {
+	    for(int i=0;i<routes.size();i++){
     		info += " Has route: "+routes.get(i).routeId+" ";
-    	}
-    	
+	    }
+	}    	
     	return info;
     }
 }
