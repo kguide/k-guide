@@ -17,17 +17,17 @@ public class Controller {
     /**
      * @return The unique instance of this class.
      */
-    static public Controller getInstance() {  
+    static public Controller getInstance() {
 		if(null == INSTANCE) {
 		    INSTANCE = new Controller();
-		}
+		}		
 		return INSTANCE;
     }
     //Singleton part ends
     public void initData(Context context) {
     	// Need to load every route locally stored (but not if it has already been done)
    		this.loadInitialMapInfo(context);
-    }    
+    }
 
     /**
      * Checks if the phone has any routes stored
@@ -64,6 +64,10 @@ public class Controller {
     }
     
     public RouteList getRouteSelectionList(int limit,int offset){
-    	return DataAccess.getRouteSelectionList(limit,offset);    	
+    	return DataAccess.getRouteSelectionList(limit,offset);
+    }
+
+    public boolean isRouteListEmpty() {
+	return routeList.current == null;
     }
 }
