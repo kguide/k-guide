@@ -50,6 +50,9 @@ public class MapWidgets {
 		
 		@Override
 		public void run() {
+		    if (ctrl.isRouteListEmpty()) {
+			return;
+		    }
 		    myPaint.setStyle(Paint.Style.STROKE); 
 		    myPaint.setARGB(255,0,0,0); 
 		    myPaint.setAntiAlias(true);
