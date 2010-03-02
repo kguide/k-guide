@@ -256,7 +256,7 @@ public class GoogleMapScreen extends MapActivity
 			public void onClick(DialogInterface dialog, int id) {
 			    dialog.cancel();
 			}
-		    });
+			});
 	    AlertDialog alert = builder.create();
 	    alert.show();
 	    break;

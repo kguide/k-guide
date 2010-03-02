@@ -2,21 +2,23 @@ package bravo.kguide.view;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import bravo.kguide.control.Controller;
 
 public class StartView extends Activity {
-    
+	Controller controller = Controller.getInstance();
+	Context context = this;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_v);
-                
+        
 	    ImageButton continuePrevious = (ImageButton)findViewById(R.id.v_main_b01_continue);
-	    
-	    
 	    continuePrevious.setOnClickListener(new ImageButton.OnClickListener(){
 	    	public void onClick(View v){
 	    		Intent startGoogleMapScreen = new Intent(StartView.this,GoogleMapScreen.class);
@@ -27,8 +29,11 @@ public class StartView extends Activity {
 	    ImageButton selectRoute = (ImageButton)findViewById(R.id.v_main_b02_selectroute);
 	    selectRoute.setOnClickListener(new ImageButton.OnClickListener(){
 	    	public void onClick(View v){
-	    		Intent startSelectRouteScreen = new Intent(StartView.this,RouteSelection.class);
-	    		startActivity(startSelectRouteScreen);
+	    		if(controller.hasRoutesOnPhone(context)){
+	    			controller.loadInitialMapInfo(context);
+		    		Intent startSelectRouteScreen = new Intent(StartView.this,RouteSelection.class);
+		    		startActivity(startSelectRouteScreen);
+	    		}
 	    	}
 	    });
 	    
@@ -50,7 +55,8 @@ public class StartView extends Activity {
 	    ImageButton help = (ImageButton)findViewById(R.id.v_main_b05_help);
 	    help.setOnClickListener(new ImageButton.OnClickListener(){
 	    	public void onClick(View v){
-	    		; //does nothing at the moment
+	    		Intent helpScreen = new Intent(StartView.this,HelpGuide.class);
+	    		startActivity(helpScreen);
 	    	}
 	    });
 	

@@ -44,7 +44,7 @@ public class ServerConnection {
      * @return : A json string for the given route 
      * selected routeId then this returned object will be null.
      */
-    public static String getRouteFromServer(int routeId, boolean downloadAllContent) {
+    public static String getRouteFromServer(int routeId) {
 		String connectionString = domainString + "route/getRouteJson/" + routeId;
 		return serverReply(connectionString);
     }
