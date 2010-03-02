@@ -238,9 +238,24 @@ public class GoogleMapScreen extends MapActivity
     public boolean onOptionsItemSelected(MenuItem item) {
 	switch (item.getItemId()) {
 	case PLAYER_POS_ID:
-	    mapController.animateTo(ctrl.routeList.current.routePath.get(0).p);
+	    mapController.animateTo(playerPosition);
 	    break;
 	case CURRENT_POS_ID:
+	    if (ctrl.isRouteListEmpty()) {
+		String helpString = "No routes have been added.  Goto Select Route to get new routes";
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		builder.setMessage(helpString)
+		    .setCancelable(false)
+		    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			    public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			    }
+			});
+		AlertDialog alert = builder.create();
+		alert.show();
+		break;
+	    }
 	    mapController.animateTo(ctrl.routeList.nextRoute().routePath.get(0).p);
 	    mapController.setZoom(15);
 	    this.mapView.invalidate();
