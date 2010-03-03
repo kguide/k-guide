@@ -174,6 +174,11 @@ public class RouteSelection extends ListActivity {
 			public boolean onMenuItemClick(MenuItem item) {
 				Log.v("RouteSelection", "Item selected: "+longSelectedRoute);
 				int routeId = routeList.get(longSelectedRoute).routeId;
+
+				// If the intial data hasn't been loaded, we need to load it now
+				if(controller.hasRoutesOnPhone(context)){
+	    			controller.loadInitialMapInfo(context);
+	    		}
 				controller.addRouteToList(context, routeId);
 				return false;
 			}

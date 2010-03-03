@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import bravo.kguide.control.Controller;
@@ -21,19 +22,24 @@ public class StartView extends Activity {
 	    ImageButton continuePrevious = (ImageButton)findViewById(R.id.v_main_b01_continue);
 	    continuePrevious.setOnClickListener(new ImageButton.OnClickListener(){
 	    	public void onClick(View v){
-	    		Intent startGoogleMapScreen = new Intent(StartView.this,GoogleMapScreen.class);
-	    		startActivity(startGoogleMapScreen);    			
+	    		controller.debugPrintRouteList();
+	    		if(controller.getRouteListCount() == 0 & controller.hasRoutesOnPhone(context)){
+	    			controller.loadInitialMapInfo(context);
+		    		Intent startGoogleMapScreen = new Intent(StartView.this,GoogleMapScreen.class);
+		    		startActivity(startGoogleMapScreen);    				    		
+	    		}
+	    		else if(controller.getRouteListCount() > 0){
+		    		Intent startGoogleMapScreen = new Intent(StartView.this,GoogleMapScreen.class);
+		    		startActivity(startGoogleMapScreen);    			
+	    		}
 	    	}
 	    });
 	    
 	    ImageButton selectRoute = (ImageButton)findViewById(R.id.v_main_b02_selectroute);
 	    selectRoute.setOnClickListener(new ImageButton.OnClickListener(){
 	    	public void onClick(View v){
-	    		if(controller.hasRoutesOnPhone(context)){
-	    			controller.loadInitialMapInfo(context);
 		    		Intent startSelectRouteScreen = new Intent(StartView.this,RouteSelection.class);
 		    		startActivity(startSelectRouteScreen);
-	    		}
 	    	}
 	    });
 	    
