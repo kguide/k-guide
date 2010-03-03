@@ -5,6 +5,8 @@ import bravo.kguide.control.Controller;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,7 +21,7 @@ import android.view.MenuItem;
 import android.graphics.Paint; 
 import android.graphics.Bitmap; 
 import android.graphics.BitmapFactory; 
-
+import android.view.View;
 import android.graphics.Point;
 
 import com.google.android.maps.GeoPoint;
@@ -29,6 +31,10 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
+
+import android.widget.*;
+
+import android.os.Handler;
  
 public class GoogleMapScreen extends MapActivity 
 {    
@@ -36,6 +42,10 @@ public class GoogleMapScreen extends MapActivity
     public static final int PLAYER_POS_ID = Menu.FIRST;
     public static final int HELP_ID = Menu.FIRST+1;
     public static final int CURRENT_POS_ID = Menu.FIRST+2;
+
+    public static final int CURRENT_ZOOM_INFO = 18;
+    public static final int ZOOM_WAIT = 2200;
+    
     
     
   
@@ -47,7 +57,7 @@ public class GoogleMapScreen extends MapActivity
     double currLong;
 	
     private OurOverlay ourOverlay;
-    private OurOverlay oldHint;
+    private OurOverlay infoPoint;
     private MapOverlay playerPos;
 
     private MapWidgets myWidget;
@@ -60,6 +70,42 @@ public class GoogleMapScreen extends MapActivity
     private GeoPoint p;
     private GeoPoint p2;
     private GeoPoint playerPosition;
+
+    private GeoPoint oldLocation;
+    private int oldZoom;
+
+    public boolean panAndZoom(GeoPoint curr) {
+	oldLocation = mapView.getMapCenter();
+	oldZoom = mapView.getZoomLevel();
+	mapController.animateTo(curr);
+		
+	while (mapView.getZoomLevel() != CURRENT_ZOOM_INFO) {
+	    if (mapView.getZoomLevel() < CURRENT_ZOOM_INFO) {
+		mapController.zoomIn();
+	    } 
+	    else {
+		mapController.zoomOut();
+	    }
+	}
+	return true;
+    }
+    
+    public  boolean restorePanAndZoom() {
+	//	oldLocation;
+	//oldZoom;
+	while (mapView.getZoomLevel() != oldZoom) {
+	    if (mapView.getZoomLevel() < oldZoom) {
+		mapController.zoomIn();
+	    } 
+	    else {
+		mapController.zoomOut();
+	    }
+	}
+	
+	mapController.animateTo(oldLocation);
+	return true;
+    }
+
 
     private class OurOverlay extends ItemizedOverlay<OverlayItem> {
 	
@@ -76,6 +122,7 @@ public class GoogleMapScreen extends MapActivity
 	@Override
 	protected OverlayItem createItem(int i) {
 	    return(items.get(i));
+	    
 	}
 	
 	@Override
@@ -86,20 +133,25 @@ public class GoogleMapScreen extends MapActivity
 	
 	@Override
 	protected boolean onTap(int pIndex) {    
-	    if (items.get(pIndex).getTitle().equals("hint")) {
-		AlertDialog.Builder markerHintDialog = new AlertDialog.Builder(context);
-		markerHintDialog.setMessage(items.get(pIndex).getSnippet())
+	    if (items.get(pIndex).getTitle().equals("clickable")) {
+		
+		panAndZoom(items.get(pIndex).getPoint());
+		
+		
+		AlertDialog.Builder infoDialog = new AlertDialog.Builder(context);
+		infoDialog.setMessage(items.get(pIndex).getSnippet())
 		    .setCancelable(false)
 		    .setPositiveButton("Close", new DialogInterface.OnClickListener() {
 			    public void onClick(DialogInterface dialog, int id) {
+			        restorePanAndZoom();
 				dialog.cancel();
 			    }
 			});
-		markerHintDialog.show();    	
-	    }
+		infoDialog.show();            
+            }
 	    return true;
 	}
-    
+	
 	@Override
 	public int size() {
 	    return(items.size());
@@ -154,49 +206,63 @@ public class GoogleMapScreen extends MapActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		ctrl.initData(context);
-		// Begin Display Map  
-		//----------------------------------------------------------------------------------------------------------
-		setContentView(R.layout.google_maps);
-		
-		mapView = (MapView) findViewById(R.id.googleMapsMapview);
-		mapView.setBuiltInZoomControls(true);   	
-	        mapController = mapView.getController();
-		
-		// Get the first coordinate and move the map to it.
-		//******************************************************************************************************
-		// Central reykjavik.
-		playerPosition = new GeoPoint((int) (64.13674367070412 * 1E6), 
-					      (int) (-21.923303604125977 * 1E6));
+	ctrl.initData(context);
+	// Begin Display Map  
+	//----------------------------------------------------------------------------------------------------------
+	setContentView(R.layout.google_maps);
 	
-		mapController.animateTo(playerPosition);
-		mapController.setZoom(15);
-		//******************************************************************************************************
-		//----------------------------------------------------------------------------------------------------------
-		
-		
-		// Add icon for first coordinate location 
-		//----------------------------------------------------------------------------------------------------------
-		playerPos = new MapOverlay();
-		
-		// ourOverlay.addItem(new OverlayItem(p,"hint",controller.game.getCurrentHintText()));
+	mapView = (MapView) findViewById(R.id.googleMapsMapview);
+	mapView.setBuiltInZoomControls(true);   	
+	mapController = mapView.getController();
 	
-		myWidget = new MapWidgets();
-		List<Overlay> listOfOverlays = mapView.getOverlays();
-		listOfOverlays.clear();
-		// listOfOverlays.add(ourOverlay);
-		// listOfOverlays.add(oldHint);
-		listOfOverlays.add(playerPos);
-	     
-			
-		mapView.invalidate();
-		
-		//End Display Map           
-		
-		// Set up the location listener to listen for new GPS locations
-		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		locationListener = new MyLocationListener();
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 100,locationListener);
+	// Get the first coordinate and move the map to it.
+	//******************************************************************************************************
+	// Central reykjavik.
+	playerPosition = new GeoPoint((int) (64.13674367070412 * 1E6), 
+				      (int) (-21.923303604125977 * 1E6));
+	
+	mapController.animateTo(playerPosition);
+	mapController.setZoom(15);
+	//******************************************************************************************************
+	//----------------------------------------------------------------------------------------------------------
+	
+	
+	// Add icon for first coordinate location 
+	//----------------------------------------------------------------------------------------------------------
+	playerPos = new MapOverlay();
+	
+	// ourOverlay.addItem(new OverlayItem(p,"hint",controller.game.getCurrentHintText()));
+	
+	myWidget = new MapWidgets();
+	List<Overlay> listOfOverlays = mapView.getOverlays();
+	listOfOverlays.clear();
+	// listOfOverlays.add(ourOverlay);
+	
+	listOfOverlays.add(playerPos);
+	
+	Drawable exclaim = getResources().getDrawable(R.drawable.exclaim);
+	exclaim.setBounds(0, 0, exclaim.getIntrinsicWidth(), exclaim.getIntrinsicHeight());
+	
+	infoPoint = new OurOverlay(exclaim);
+	
+	if (!ctrl.isRouteListEmpty()) {
+	    for (int u = 0; u < ctrl.routeList.current.routePath.size();u++) {
+		if (ctrl.routeList.current.hasMediaAtCoordinate(u)) {
+		    infoPoint.addItemNotDelete(new OverlayItem(ctrl.routeList.current.routePath.get(u).p,"clickable",ctrl.routeList.current.routePath.get(u).mediaArray[0]));
+		}
+	    }
+	    
+	}
+	
+	listOfOverlays.add(infoPoint);
+	mapView.invalidate();
+	
+	//End Display Map           
+	
+	// Set up the location listener to listen for new GPS locations
+	locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+	locationListener = new MyLocationListener();
+	locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 100,locationListener);
     }
     
     private class MyLocationListener implements LocationListener {
@@ -239,6 +305,7 @@ public class GoogleMapScreen extends MapActivity
 	switch (item.getItemId()) {
 	case PLAYER_POS_ID:
 	    mapController.animateTo(playerPosition);
+	    System.out.println(mapView.getZoomLevel());
 	    break;
 	case CURRENT_POS_ID:
 	    if (ctrl.isRouteListEmpty()) {
