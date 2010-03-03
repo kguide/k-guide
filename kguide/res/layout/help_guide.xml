@@ -4,14 +4,17 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@drawable/v_settings_bg"
    
     >
 
     <WebView 
         android:id="@+id/myWebview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-   
+         android:layout_width="286px"
+	    android:layout_height="290px"
+	    android:layout_marginLeft="18px"
+	    android:layout_marginTop="160px"
+	    
     />
 
 </LinearLayout>
