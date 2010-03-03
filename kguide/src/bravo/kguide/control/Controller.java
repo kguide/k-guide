@@ -27,7 +27,7 @@ public class Controller {
     public void initData(Context context) {
     	// Need to load every route locally stored (but not if it has already been done)
    		this.loadInitialMapInfo(context);
-    }
+    }    
 
     /**
      * Checks if the phone has any routes stored
@@ -42,6 +42,9 @@ public class Controller {
 
     }
     
+    public int getRouteListCount(){
+    	return routeList.routes.size();
+    }
     // lack the case when items have already been loaded
     public void loadInitialMapInfo(Context context){
     	if(routeList.routes.size()==0){
@@ -64,10 +67,15 @@ public class Controller {
     }
     
     public RouteList getRouteSelectionList(int limit,int offset){
-    	return DataAccess.getRouteSelectionList(limit,offset);
+    	return DataAccess.getRouteSelectionList(limit,offset);    	
+    }
+    
+    public void debugPrintRouteList(){
+    	if(routeList.routes.size()>0)
+    		Log.v("Controller", "Routelist: " + routeList.toString());
     }
 
     public boolean isRouteListEmpty() {
-	return routeList.current == null;
+    	return routeList.current == null;
     }
 }
