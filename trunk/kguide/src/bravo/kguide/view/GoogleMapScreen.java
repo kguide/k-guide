@@ -8,6 +8,7 @@ import java.util.List;
 
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Canvas;
@@ -47,7 +48,18 @@ public class GoogleMapScreen extends MapActivity
     public static final int ZOOM_WAIT = 2200;
     
     
-    
+
+    public ImageButton textButt;
+    public ImageButton audioButt;
+    public ImageButton homeButt;
+    public ImageButton urlButt;
+	
+
+    public List<Overlay> listOfOverlays;
+    public String showText;
+    public AlertDialog.Builder infoDialog;
+
+    public boolean isZoom = false; 
   
     Controller ctrl = Controller.getInstance();
     
@@ -74,38 +86,69 @@ public class GoogleMapScreen extends MapActivity
     private GeoPoint oldLocation;
     private int oldZoom;
 
+
+
+    public void activateButtons() {
+	textButt.setEnabled(true);
+	textButt.setVisibility(1);
+	mapView.setEnabled(false);
+	audioButt.setEnabled(false);
+	audioButt.setVisibility(1);
+	homeButt.setEnabled(true);
+	homeButt.setVisibility(1);
+	urlButt.setEnabled(false);
+	urlButt.setVisibility(1);
+    }
+
+    public void disableButtons() {
+	textButt.setEnabled(false);
+	mapView.setEnabled(true);
+	textButt.setVisibility(8);
+	audioButt.setEnabled(false);
+	audioButt.setVisibility(8);
+	homeButt.setEnabled(false);
+	homeButt.setVisibility(8);
+	urlButt.setEnabled(false);
+	urlButt.setVisibility(8);
+	
+    }
+
     public boolean panAndZoom(GeoPoint curr) {
-	oldLocation = mapView.getMapCenter();
-	oldZoom = mapView.getZoomLevel();
-	mapController.animateTo(curr);
-		
-	while (mapView.getZoomLevel() != CURRENT_ZOOM_INFO) {
-	    if (mapView.getZoomLevel() < CURRENT_ZOOM_INFO) {
-		mapController.zoomIn();
-	    } 
-	    else {
-		mapController.zoomOut();
+
+	    isZoom = true;
+	    oldLocation = mapView.getMapCenter();
+	    oldZoom = mapView.getZoomLevel();
+	    mapController.animateTo(curr);
+	    
+	    while (mapView.getZoomLevel() != CURRENT_ZOOM_INFO) {
+		if (mapView.getZoomLevel() < CURRENT_ZOOM_INFO) {
+		    mapController.zoomIn();
+		} 
+		else {
+		    mapController.zoomOut();
+		}
 	    }
-	}
-	return true;
+	    return true;
     }
     
     public  boolean restorePanAndZoom() {
-	//	oldLocation;
-	//oldZoom;
-	while (mapView.getZoomLevel() != oldZoom) {
-	    if (mapView.getZoomLevel() < oldZoom) {
-		mapController.zoomIn();
-	    } 
-	    else {
-		mapController.zoomOut();
-	    }
-	}
-	
-	mapController.animateTo(oldLocation);
-	return true;
-    }
+	//	Oldlocation;
+	//Oldzoome;
 
+	    isZoom = false;
+	    while (mapView.getZoomLevel() != oldZoom) {
+		if (mapView.getZoomLevel() < oldZoom) {
+		    mapController.zoomIn();
+		} 
+		else {
+		    mapController.zoomOut();
+		}
+	    }
+	    
+	    mapController.animateTo(oldLocation);
+	    return true;
+    }
+    
 
     private class OurOverlay extends ItemizedOverlay<OverlayItem> {
 	
@@ -136,19 +179,58 @@ public class GoogleMapScreen extends MapActivity
 	    if (items.get(pIndex).getTitle().equals("clickable")) {
 		
 		panAndZoom(items.get(pIndex).getPoint());
+		Dialog dialog = new Dialog(context);
+
+		dialog.setContentView(R.layout.cust1_diag);
+		dialog.setTitle("Choose media");
+		//dialog.show();
+		activateButtons();
+
+
+		
+		homeButt.setOnClickListener(new Button.OnClickListener() {
+			
+                        @Override
+                        public void onClick(View v) {
+			    disableButtons();
+			    restorePanAndZoom();
+		
+			}
+		    });
 		
 		
-		AlertDialog.Builder infoDialog = new AlertDialog.Builder(context);
+		
+
+
+		infoDialog = new AlertDialog.Builder(context);
 		infoDialog.setMessage(items.get(pIndex).getSnippet())
-		    .setCancelable(false)
-		    .setPositiveButton("Close", new DialogInterface.OnClickListener() {
-			    public void onClick(DialogInterface dialog, int id) {
-			        restorePanAndZoom();
-				dialog.cancel();
-			    }
-			});
-		infoDialog.show();            
-            }
+				.setCancelable(false)
+				.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+					    dialog.cancel();
+					    restorePanAndZoom();
+					    textButt.setEnabled(false);
+					    textButt.setVisibility(8);
+					    mapView.setEnabled(true);
+					    audioButt.setEnabled(false);
+					    audioButt.setVisibility(8);
+					    homeButt.setEnabled(false);
+					    homeButt.setVisibility(8);
+					    urlButt.setEnabled(false);
+					    urlButt.setVisibility(8);
+					}
+				    });
+		textButt.setOnClickListener(new Button.OnClickListener() {
+			
+                        @Override
+                        public void onClick(View v) {
+			    
+			    
+			    infoDialog.show();       
+			                   
+                        }
+		    });
+	    }
 	    return true;
 	}
 	
@@ -170,6 +252,11 @@ public class GoogleMapScreen extends MapActivity
 	    populate();
 	}
 
+	public void clear() {
+	    items.clear();
+	    populate();
+	}
+        
 	
     }
 
@@ -214,6 +301,20 @@ public class GoogleMapScreen extends MapActivity
 	mapView = (MapView) findViewById(R.id.googleMapsMapview);
 	mapView.setBuiltInZoomControls(true);   	
 	mapController = mapView.getController();
+	textButt = (ImageButton) findViewById(R.id.text);
+	audioButt = (ImageButton) findViewById(R.id.audio);
+	homeButt = (ImageButton) findViewById(R.id.home);
+	urlButt = (ImageButton) findViewById(R.id.url);
+	textButt.setEnabled(false);
+	textButt.setVisibility(8);
+	audioButt.setEnabled(false);
+	audioButt.setVisibility(8);
+	homeButt.setEnabled(false);
+	homeButt.setVisibility(8);
+	urlButt.setEnabled(false);
+	urlButt.setVisibility(8);
+
+	
 	
 	// Get the first coordinate and move the map to it.
 	//******************************************************************************************************
@@ -234,11 +335,11 @@ public class GoogleMapScreen extends MapActivity
 	// ourOverlay.addItem(new OverlayItem(p,"hint",controller.game.getCurrentHintText()));
 	
 	myWidget = new MapWidgets();
-	List<Overlay> listOfOverlays = mapView.getOverlays();
+	listOfOverlays = mapView.getOverlays();
 	listOfOverlays.clear();
 	// listOfOverlays.add(ourOverlay);
 	
-	listOfOverlays.add(playerPos);
+
 	
 	Drawable exclaim = getResources().getDrawable(R.drawable.exclaim);
 	exclaim.setBounds(0, 0, exclaim.getIntrinsicWidth(), exclaim.getIntrinsicHeight());
@@ -253,8 +354,9 @@ public class GoogleMapScreen extends MapActivity
 	    }
 	    
 	}
-	
+	listOfOverlays.add(playerPos);
 	listOfOverlays.add(infoPoint);
+
 	mapView.invalidate();
 	
 	//End Display Map           
@@ -304,10 +406,18 @@ public class GoogleMapScreen extends MapActivity
     public boolean onOptionsItemSelected(MenuItem item) {
 	switch (item.getItemId()) {
 	case PLAYER_POS_ID:
+	    if (isZoom) {
+		disableButtons();
+		restorePanAndZoom();
+	    }
 	    mapController.animateTo(playerPosition);
-	    System.out.println(mapView.getZoomLevel());
 	    break;
 	case CURRENT_POS_ID:
+	     if (isZoom) {
+		disableButtons();
+		restorePanAndZoom();
+	    }
+
 	    if (ctrl.isRouteListEmpty()) {
 		String helpString = "No routes have been added.  Goto Select Route to get new routes";
 		
@@ -323,7 +433,19 @@ public class GoogleMapScreen extends MapActivity
 		alert.show();
 		break;
 	    }
+
+	    infoPoint.clear();
+	    listOfOverlays.clear();
 	    mapController.animateTo(ctrl.routeList.nextRoute().routePath.get(0).p);
+	    for (int u = 0; u < ctrl.routeList.current.routePath.size();u++) {
+		if (ctrl.routeList.current.hasMediaAtCoordinate(u)) {
+		    infoPoint.addItemNotDelete(new OverlayItem(ctrl.routeList.current.routePath.get(u).p,"clickable",ctrl.routeList.current.routePath.get(u).mediaArray[0]));
+		}
+	    }
+	    listOfOverlays.add(infoPoint);
+	    listOfOverlays.add(playerPos);
+	    
+	    
 	    mapController.setZoom(15);
 	    this.mapView.invalidate();
 	    break;
