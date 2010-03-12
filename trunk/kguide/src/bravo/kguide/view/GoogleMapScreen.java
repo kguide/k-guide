@@ -53,6 +53,7 @@ public class GoogleMapScreen extends MapActivity
     public ImageButton audioButt;
     public ImageButton homeButt;
     public ImageButton urlButt;
+    public ImageButton photoButt;
 	
 
     public List<Overlay> listOfOverlays;
@@ -98,6 +99,8 @@ public class GoogleMapScreen extends MapActivity
 	homeButt.setVisibility(1);
 	urlButt.setEnabled(false);
 	urlButt.setVisibility(1);
+	photoButt.setEnabled(false);
+	photoButt.setVisibility(1);
     }
 
     public void disableButtons() {
@@ -110,6 +113,8 @@ public class GoogleMapScreen extends MapActivity
 	homeButt.setVisibility(8);
 	urlButt.setEnabled(false);
 	urlButt.setVisibility(8);
+	photoButt.setEnabled(false);
+	photoButt.setVisibility(8);
 	
     }
 
@@ -132,8 +137,8 @@ public class GoogleMapScreen extends MapActivity
     }
     
     public  boolean restorePanAndZoom() {
-	//	Oldlocation;
-	//Oldzoome;
+	//Oldlocation;
+	//Oldzoom;
 
 	    isZoom = false;
 	    while (mapView.getZoomLevel() != oldZoom) {
@@ -209,15 +214,8 @@ public class GoogleMapScreen extends MapActivity
 					public void onClick(DialogInterface dialog, int id) {
 					    dialog.cancel();
 					    restorePanAndZoom();
-					    textButt.setEnabled(false);
-					    textButt.setVisibility(8);
 					    mapView.setEnabled(true);
-					    audioButt.setEnabled(false);
-					    audioButt.setVisibility(8);
-					    homeButt.setEnabled(false);
-					    homeButt.setVisibility(8);
-					    urlButt.setEnabled(false);
-					    urlButt.setVisibility(8);
+					    disableButtons();
 					}
 				    });
 		textButt.setOnClickListener(new Button.OnClickListener() {
@@ -305,6 +303,7 @@ public class GoogleMapScreen extends MapActivity
 	audioButt = (ImageButton) findViewById(R.id.audio);
 	homeButt = (ImageButton) findViewById(R.id.home);
 	urlButt = (ImageButton) findViewById(R.id.url);
+	photoButt = (ImageButton) findViewById(R.id.photo);
 	textButt.setEnabled(false);
 	textButt.setVisibility(8);
 	audioButt.setEnabled(false);
@@ -313,6 +312,8 @@ public class GoogleMapScreen extends MapActivity
 	homeButt.setVisibility(8);
 	urlButt.setEnabled(false);
 	urlButt.setVisibility(8);
+	photoButt.setEnabled(false);
+	photoButt.setVisibility(8);
 
 	
 	

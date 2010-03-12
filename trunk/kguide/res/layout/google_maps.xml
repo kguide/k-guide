@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mainlayout"
     android:orientation="vertical"
@@ -14,14 +13,13 @@
         android:apiKey="0eRJf97K_1wSxFAYbYR8hmNlYbTXF__K4NnI9EA"        
     />
 
-
 <ImageButton
 android:id="@+id/audio"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:src="@drawable/btn_audio"
-android:layout_x="197px"
-android:layout_y="212px"
+android:layout_x="180px"
+android:layout_y="152px"
 android:background="@null"
 >
 </ImageButton>
@@ -30,8 +28,8 @@ android:id="@+id/home"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:src="@drawable/btn_home"
-android:layout_x="243px"
-android:layout_y="282px"
+android:layout_x="220px"
+android:layout_y="222px"
 android:background="@null"
 >
 </ImageButton>
@@ -40,8 +38,8 @@ android:id="@+id/url"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:src="@drawable/btn_url"
-android:layout_x="76px"
-android:layout_y="212px"
+android:layout_x="90px"
+android:layout_y="152px"
 android:background="@null"
 >
 </ImageButton>
@@ -50,8 +48,18 @@ android:id="@+id/text"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:src="@drawable/btn_text"
-android:layout_x="27px"
-android:layout_y="282px"
+android:layout_x="55px"
+android:layout_y="222px"
+android:background="@null"
+>
+</ImageButton>
+<ImageButton
+android:id="@+id/photo"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:src="@drawable/btn_photo"
+android:layout_x="139px"
+android:layout_y="292px"
 android:background="@null"
 >
 </ImageButton>
@@ -62,5 +70,4 @@ android:background="@null"
         android:layout_alignParentBottom="true" 
         android:layout_centerHorizontal="true" 
         /> 
-
 </AbsoluteLayout>
