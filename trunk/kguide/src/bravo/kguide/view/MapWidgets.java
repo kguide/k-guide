@@ -9,13 +9,21 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style; 
 import android.graphics.Color;
 
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapController;
+import com.google.android.maps.MapView;
+import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
+
 import com.google.android.maps.MapView;
 
 interface WidgetFrame {
     public void run();
 }
 
-public class MapWidgets {
+public class MapWidgets extends com.google.android.maps.Overlay {
 
     protected Canvas ourCanvas;
     protected MapView ourMap;
@@ -31,14 +39,15 @@ public class MapWidgets {
 	widgetList.add(wid);
     }
 
-
-    public void drawComplex(Canvas ourC, MapView ourM) {
-	ourCanvas = ourC;
-	ourMap = ourM;
+    @Override
+    public void draw(Canvas canvas, MapView mapView, 
+		     boolean shadow) 
+    {
+	ourMap = mapView;
+	ourCanvas = canvas;
 	for (int i = 0; i<widgetList.size(); i++) {
 	    ((WidgetFrame)widgetList.get(i)).run();
 	}
-
     }
     
     public MapWidgets() {

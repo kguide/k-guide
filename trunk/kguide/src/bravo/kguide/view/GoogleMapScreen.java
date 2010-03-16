@@ -280,7 +280,7 @@ public class GoogleMapScreen extends MapActivity
 			 boolean shadow) 
         {
 	    super.draw(canvas, mapView, shadow);
-	    myWidget.drawComplex(canvas,mapView);
+	    myWidget.draw(canvas, mapView, shadow);
 	    mapView.getProjection().toPixels(playerPosition, screenPts);
 	    canvas.drawBitmap(walker, screenPts.x-8, screenPts.y-8, null); 
         }
@@ -414,7 +414,7 @@ public class GoogleMapScreen extends MapActivity
 	    mapController.animateTo(playerPosition);
 	    break;
 	case CURRENT_POS_ID:
-	     if (isZoom) {
+	    if (isZoom) {
 		disableButtons();
 		restorePanAndZoom();
 	    }
