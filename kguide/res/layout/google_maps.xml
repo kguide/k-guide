@@ -10,8 +10,18 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:clickable="true"
-        android:apiKey="0eRJf97K_1wSxFAYbYR8hmNlYbTXF__K4NnI9EA"        
+        android:layout_weight="1"
+        android:apiKey="0eRJf97K_1wQJ7dGUofj15wX2YY8mKyviLr14Gg"
     />
+
+    <!--
+           Ragnar lapp:
+    android:apiKey="0eRJf97K_1wSxFAYbYR8hmNlYbTXF__K4NnI9EA" 
+    
+
+       Ragnar desktop work
+    android:apiKey="0eRJf97K_1wQJ7dGUofj15wX2YY8mKyviLr14Gg"
+    -->
 
 <ImageButton
 android:id="@+id/audio"
@@ -70,4 +80,98 @@ android:background="@null"
         android:layout_alignParentBottom="true" 
         android:layout_centerHorizontal="true" 
         /> 
+
+<AbsoluteLayout 
+   android:id="@+id/playerlayout"
+   android:orientation="vertical"
+   android:layout_x="0px"
+   android:layout_y="420px"
+   android:gravity="top"
+   android:layout_width="fill_parent"
+   android:layout_height="80px" >
+  <LinearLayout
+     android:id="@+id/playerLayout" 
+     android:layout_width="fill_parent" 
+     android:layout_height="fill_parent" 
+     android:orientation="vertical"
+     > 
+    
+    <LinearLayout 
+       android:id="@+id/playerControls" 
+       android:layout_width="fill_parent" 
+       android:layout_height="wrap_content" 
+       android:background="#DD333344"
+       android:orientation="horizontal"
+       android:gravity="center"
+       android:padding="2px"
+       > 
+      <ImageButton
+	 android:paddingLeft="8px"
+	 android:paddingRight="8px"
+	 android:id="@+id/audio_backward"
+	 android:layout_width="wrap_content"
+	 android:layout_height="wrap_content"
+	 android:src="@drawable/btn_back"
+	 android:background="@null"
+	 >
+      </ImageButton>
+      <ImageButton
+	 android:paddingLeft="8px"
+	 android:paddingRight="8px"
+	 android:id="@+id/audio_play"
+	 android:layout_width="wrap_content"
+	 android:layout_height="wrap_content"
+	 android:src="@drawable/btn_play"
+	 android:background="@null"
+	 >
+      </ImageButton>
+      <ImageButton
+	 android:paddingLeft="8px"
+	 android:paddingRight="8px"
+	 android:id="@+id/audio_forward"
+	 android:layout_width="wrap_content"
+	 android:layout_height="wrap_content"
+	 android:src="@drawable/btn_forward"
+	 android:background="@null"
+	 >
+      </ImageButton>
+    </LinearLayout>
+    <LinearLayout 
+       android:id="@+id/playerInfo" 
+       android:layout_width="fill_parent" 
+       android:layout_height="wrap_content" 
+       android:background="#DD222233"
+       android:orientation="horizontal"
+       android:padding="2px"
+       > 
+      <TextView
+	 android:paddingLeft="8px"
+	 android:paddingRight="8px"
+	 android:id="@+id/elapsedTime"
+	 android:layout_width="wrap_content" 
+	 android:layout_height="wrap_content" 
+	 android:gravity="left"
+	 android:text="00:00" />
+
+    <ProgressBar 
+       android:paddingLeft="8px"
+       android:paddingRight="8px"
+       android:id="@+id/progressbar"
+       android:layout_width="200px" 
+       android:layout_height="20px"         
+       android:gravity="center"
+       style="?android:attr/progressBarStyleHorizontal"
+       />
+      <TextView
+	 android:paddingLeft="8px"
+	 android:paddingRight="8px"
+	 android:id="@+id/totalTime"
+	 android:layout_width="wrap_content" 
+	 android:layout_height="wrap_content" 
+	 android:gravity="right"
+	 android:text="00:00" />
+    </LinearLayout>
+  </LinearLayout>    
+  
+</AbsoluteLayout>
 </AbsoluteLayout>
