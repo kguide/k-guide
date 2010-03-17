@@ -5,7 +5,11 @@ import bravo.kguide.control.Controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
 
+import java.lang.String;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -36,6 +40,12 @@ import com.google.android.maps.OverlayItem;
 import android.widget.*;
 
 import android.os.Handler;
+
+class Mp3Filter implements FilenameFilter {
+    public boolean accept(File dir, String name) {
+        return (name.endsWith(".mp3"));
+    }
+}
  
 public class GoogleMapScreen extends MapActivity 
 {    
@@ -54,6 +64,15 @@ public class GoogleMapScreen extends MapActivity
     public ImageButton homeButt;
     public ImageButton urlButt;
     public ImageButton photoButt;
+
+    public ImageButton playButt;
+    public ImageButton forwardButt;
+    public ImageButton backwardButt;
+
+
+    public SeekBar progressBar;
+    public TextView elapsedTime;
+    public TextView totalTime;
 	
 
     public List<Overlay> listOfOverlays;
@@ -93,7 +112,7 @@ public class GoogleMapScreen extends MapActivity
 	textButt.setEnabled(true);
 	textButt.setVisibility(1);
 	mapView.setEnabled(false);
-	audioButt.setEnabled(false);
+	audioButt.setEnabled(true);
 	audioButt.setVisibility(1);
 	homeButt.setEnabled(true);
 	homeButt.setVisibility(1);
@@ -107,7 +126,7 @@ public class GoogleMapScreen extends MapActivity
 	textButt.setEnabled(false);
 	mapView.setEnabled(true);
 	textButt.setVisibility(8);
-	audioButt.setEnabled(false);
+	audioButt.setEnabled(true);
 	audioButt.setVisibility(8);
 	homeButt.setEnabled(false);
 	homeButt.setVisibility(8);
@@ -117,6 +136,45 @@ public class GoogleMapScreen extends MapActivity
 	photoButt.setVisibility(8);
 	
     }
+
+ public void activatePlayerButtons() {
+	playButt.setEnabled(true);
+	playButt.setVisibility(1);
+	backwardButt.setEnabled(false);
+	backwardButt.setVisibility(1);
+	forwardButt.setEnabled(true);
+	forwardButt.setVisibility(1);
+    }
+
+    public void disablePlayerButtons() {
+	playButt.setEnabled(false);
+	playButt.setVisibility(8);
+	backwardButt.setEnabled(false);
+	backwardButt.setVisibility(8);
+	forwardButt.setEnabled(true);
+	forwardButt.setVisibility(8);
+    }
+
+
+
+    public void initPlayer() {
+	playButt = (ImageButton) findViewById(R.id.audio_play);
+	backwardButt = (ImageButton) findViewById(R.id.audio_backward);
+	forwardButt = (ImageButton) findViewById(R.id.audio_forward);
+	progressBar = (SeekBar) findViewById(R.id.progressbar);
+	elapsedTime = (TextView) findViewById(R.id.elapsedTime);
+	totalTime = (TextView) findViewById(R.id.totalTime);
+	activatePlayerButtons();
+	// homeButt.setOnClickListener(new Button.OnClickListener() {
+	// 	@Override
+	// 	public void onClick(View v) {
+
+	// 	}
+	//     });
+	
+	
+    }
+	
 
     public boolean panAndZoom(GeoPoint curr) {
 
@@ -190,8 +248,6 @@ public class GoogleMapScreen extends MapActivity
 		dialog.setTitle("Choose media");
 		//dialog.show();
 		activateButtons();
-
-
 		
 		homeButt.setOnClickListener(new Button.OnClickListener() {
 			
@@ -203,9 +259,16 @@ public class GoogleMapScreen extends MapActivity
 			}
 		    });
 		
+		audioButt.setOnClickListener(new Button.OnClickListener() {
+			
+			@Override
+                        public void onClick(View v) {
+			    ctrl.ourPlayer.playAudio("marmelade.mp3",progressBar,elapsedTime,totalTime);
+			    disableButtons();
+			    restorePanAndZoom();
+			}
+		    });
 		
-		
-
 
 		infoDialog = new AlertDialog.Builder(context);
 		infoDialog.setMessage(items.get(pIndex).getSnippet())
@@ -299,23 +362,15 @@ public class GoogleMapScreen extends MapActivity
 	mapView = (MapView) findViewById(R.id.googleMapsMapview);
 	mapView.setBuiltInZoomControls(true);   	
 	mapController = mapView.getController();
+
 	textButt = (ImageButton) findViewById(R.id.text);
 	audioButt = (ImageButton) findViewById(R.id.audio);
 	homeButt = (ImageButton) findViewById(R.id.home);
 	urlButt = (ImageButton) findViewById(R.id.url);
 	photoButt = (ImageButton) findViewById(R.id.photo);
-	textButt.setEnabled(false);
-	textButt.setVisibility(8);
-	audioButt.setEnabled(false);
-	audioButt.setVisibility(8);
-	homeButt.setEnabled(false);
-	homeButt.setVisibility(8);
-	urlButt.setEnabled(false);
-	urlButt.setVisibility(8);
-	photoButt.setEnabled(false);
-	photoButt.setVisibility(8);
-
+	disableButtons();
 	
+	initPlayer();
 	
 	// Get the first coordinate and move the map to it.
 	//******************************************************************************************************
