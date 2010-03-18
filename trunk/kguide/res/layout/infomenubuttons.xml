@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout 
+   xmlns:android="http://schemas.android.com/apk/res/android"
+   android:id="@+id/googleInfoButtons"
+   android:orientation="vertical"
+   android:layout_x="0px"
+   android:layout_y="0px"
+   android:layout_width="fill_parent"
+   android:layout_height="fill_parent" >
+  
+  <ImageButton
+     android:id="@+id/audio"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:src="@drawable/btn_audio"
+     android:layout_x="180px"
+     android:layout_y="152px"
+     android:background="@null"
+     >
+  </ImageButton>
+  <ImageButton
+     android:id="@+id/home"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:src="@drawable/btn_home"
+     android:layout_x="220px"
+     android:layout_y="222px"
+     android:background="@null"
+     >
+  </ImageButton>
+  <ImageButton
+     android:id="@+id/url"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:src="@drawable/btn_url"
+     android:layout_x="90px"
+     android:layout_y="152px"
+     android:background="@null"
+     >
+  </ImageButton>
+  <ImageButton
+     android:id="@+id/text"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:src="@drawable/btn_text"
+     android:layout_x="55px"
+     android:layout_y="222px"
+     android:background="@null"
+     >
+  </ImageButton>
+  <ImageButton
+     android:id="@+id/photo"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:src="@drawable/btn_photo"
+     android:layout_x="139px"
+     android:layout_y="292px"
+     android:background="@null"
+     >
+  </ImageButton>
+  
+ </AbsoluteLayout>
