@@ -9,6 +9,11 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
+
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+
+
 import java.lang.String;
 
 import android.app.AlertDialog;
@@ -69,7 +74,7 @@ public class GoogleMapScreen extends MapActivity
     public ImageButton forwardButt;
     public ImageButton backwardButt;
 
-
+    public AbsoluteLayout playOut;
     public SeekBar progressBar;
     public TextView elapsedTime;
     public TextView totalTime;
@@ -106,6 +111,13 @@ public class GoogleMapScreen extends MapActivity
     private GeoPoint oldLocation;
     private int oldZoom;
 
+
+
+    private final Handler handler = new Handler();
+    
+
+
+    
 
 
     public void activateButtons() {
@@ -158,13 +170,20 @@ public class GoogleMapScreen extends MapActivity
 
 
     public void initPlayer() {
+	playOut = (AbsoluteLayout) findViewById(R.id.playerlayout);
 	playButt = (ImageButton) findViewById(R.id.audio_play);
 	backwardButt = (ImageButton) findViewById(R.id.audio_backward);
 	forwardButt = (ImageButton) findViewById(R.id.audio_forward);
 	progressBar = (SeekBar) findViewById(R.id.progressbar);
 	elapsedTime = (TextView) findViewById(R.id.elapsedTime);
 	totalTime = (TextView) findViewById(R.id.totalTime);
-	activatePlayerButtons();
+	playOut.setEnabled(true);
+	playOut.setVisibility(8);
+	activatePlayerButtons();	
+	Animation down = AnimationUtils.loadAnimation(context, R.anim.push_down_out);
+	playOut.startAnimation(down);
+
+	
 	// homeButt.setOnClickListener(new Button.OnClickListener() {
 	// 	@Override
 	// 	public void onClick(View v) {
@@ -209,6 +228,7 @@ public class GoogleMapScreen extends MapActivity
 	    }
 	    
 	    mapController.animateTo(oldLocation);
+	    
 	    return true;
     }
     
@@ -263,9 +283,26 @@ public class GoogleMapScreen extends MapActivity
 			
 			@Override
                         public void onClick(View v) {
-			    ctrl.ourPlayer.playAudio("marmelade.mp3",progressBar,elapsedTime,totalTime);
 			    disableButtons();
 			    restorePanAndZoom();
+			    
+			    Runnable update = new Runnable() {
+				    public void run() {
+					Animation down = AnimationUtils.loadAnimation(context, R.anim.push_up_in);
+					playOut.startAnimation(down);
+					playOut.setVisibility(8);
+					
+				    }
+				};
+			    
+			    
+			    handler.postDelayed(update,6000);
+			    Animation up = AnimationUtils.loadAnimation(context, R.anim.push_up_in);
+
+			    playOut.startAnimation(up);
+			    ctrl.ourPlayer.playAudio("marmelade.mp3",progressBar,elapsedTime,totalTime);
+			    playOut.setVisibility(1);
+
 			}
 		    });
 		

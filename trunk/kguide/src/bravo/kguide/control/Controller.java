@@ -5,11 +5,18 @@ import android.util.Log;
 import bravo.kguide.data.DataAccess;
 import bravo.kguide.data.ServerConnection;
 
+import bravo.kguide.view.AudioPlay;
+
 
 public class Controller {
+
+    
     public RouteList routeList = new RouteList();
     public ServerConnection server;
     public DataAccess dal;
+
+    public AudioPlay ourPlayer;
+    
     //Singleton creation of control
     protected Controller() {}  // private so other classes can't instantiate 
     static private Controller INSTANCE = null;
@@ -19,6 +26,7 @@ public class Controller {
      */
     static public Controller getInstance() {
 		if(null == INSTANCE) {
+		  
 		    INSTANCE = new Controller();
 		}		
 		return INSTANCE;
@@ -26,7 +34,8 @@ public class Controller {
     //Singleton part ends
     public void initData(Context context) {
     	// Need to load every route locally stored (but not if it has already been done)
-   		this.loadInitialMapInfo(context);
+	ourPlayer = new AudioPlay();
+	this.loadInitialMapInfo(context);
     }    
 
     /**
