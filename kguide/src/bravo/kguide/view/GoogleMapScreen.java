@@ -167,8 +167,6 @@ public class GoogleMapScreen extends MapActivity
 	forwardButt.setVisibility(8);
     }
 
-
-
     public void initPlayer() {
 	playOut = (AbsoluteLayout) findViewById(R.id.playerlayout);
 	playButt = (ImageButton) findViewById(R.id.audio_play);
