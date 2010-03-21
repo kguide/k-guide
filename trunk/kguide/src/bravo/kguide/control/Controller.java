@@ -3,6 +3,7 @@ package bravo.kguide.control;
 import android.content.Context;
 import android.util.Log;
 import bravo.kguide.data.DataAccess;
+import bravo.kguide.data.MediaHandler;
 import bravo.kguide.data.ServerConnection;
 
 import bravo.kguide.view.AudioPlay;
@@ -16,7 +17,8 @@ public class Controller {
     public DataAccess dal;
 
     public AudioPlay ourPlayer;
-    
+    public boolean storeMedia = true;
+    public String storeLocation = MediaHandler.HOME_DIRECTORY_SD;
     //Singleton creation of control
     protected Controller() {}  // private so other classes can't instantiate 
     static private Controller INSTANCE = null;
@@ -61,17 +63,28 @@ public class Controller {
 	    	int intArray[] = dal.getLocalRouteIdArray();
 	    	Log.v("Controller", "loadMapInfo idArray size "+intArray.length);
 	    	for(int id : intArray){
-	    		routeList.addRoute(dal.getRoute(id));
+	    		routeList.addRoute(dal.getRoute(id,false,null));
 	    	}
 	    	Log.v("Controller",routeList.toString());
 	    	dal.closeDatabase();
     	}
     }
     
-    public void addRouteToList(Context context,int routeId){
-    	this.loadInitialMapInfo(context);
+    /**
+     * Gets a route with a given routeId and context
+     * @param context
+     * @param routeId 
+     */
+    public Routes getRoute(Context context, int routeId){
+    	Log.v("Controller","getting route");
     	dal = new DataAccess(context);
-    	routeList.addRoute(dal.getRoute(routeId));
+    	return dal.getRoute(routeId,storeMedia,storeLocation);
+    }
+    
+    public void addRouteToList(Context context,int routeId){
+    	//this.loadInitialMapInfo(context);
+    	dal = new DataAccess(context);
+    	routeList.addRoute(dal.getRoute(routeId,storeMedia,storeLocation));
     	Log.v("Controller", "addRouteToList now routelist has:"+routeList.routes.size());
     }
     

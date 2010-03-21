@@ -5,11 +5,9 @@ import android.database.Cursor;
 import android.util.Log;
 import bravo.kguide.control.RouteList;
 import bravo.kguide.control.Routes;
-import bravo.kguide.control.Routes.Coordinate;
 
 public class DataAccess {
 	private static RouteDB routeDB;
-	private static ServerConnection server;
 	
 	public DataAccess(Context context) {
 		Log.v("DAL","Initializing routeDB");
@@ -44,20 +42,48 @@ public class DataAccess {
      * @param storeMedia : If true all media content will be fetched and put on the phone file system
      * @return : A route object of the selected route's routeId. 
      */
-	public Routes getRoute(int routeId){
+	public Routes getRoute(int routeId, boolean storeMedia, String storeLocation){
     	String jsonReply;
 		if(!this.existsRoute(routeId)){
 			Log.v("DAL","Get route from server");
     		jsonReply = ServerConnection.getRouteFromServer(routeId);
     		Log.v("DAL","Route has been retrived");
     		this.insertRoute(routeId, jsonReply);
-    		return this.constructRoute(routeId);
+    		Routes route = constructRoute(routeId);
+    		if(storeMedia){
+    			downloadMedia(route, storeLocation);
+    		}
+    		return route;
     	}
 		else{
 			Log.v("DAL","Route exists locally calling constructRoute");
 			return this.constructRoute(routeId);
 		}
 	}
+
+	/**
+	 * Download all files needed for the route
+	 * @param route : Routes object of the route containing all information about the route
+	 * @param storeLocation : MediaHandler constant to set store location to be either cache, sd or local
+	 * @return
+	 */
+	private boolean downloadMedia(Routes route, String storeLocation){
+		int routeId = route.routeId;
+		MediaHandler mh = new MediaHandler();
+    	for(int i=0;i<route.routePath.size();i++){
+	    	//Now we want to download all audio and photos
+    			String[] media = route.routePath.get(i).mediaArray;
+	    		if(media[RouteDB.MEDIA_ARRAY_AUDIO] != null){
+	    			mh.storeFile(media[RouteDB.MEDIA_ARRAY_AUDIO], storeLocation, MediaHandler.AUDIO_MEDIA_DIR, routeId, i);
+	    		}
+	    		
+	    		if(media[RouteDB.MEDIA_ARRAY_PHOTO] != null){
+	    			mh.storeFile(media[RouteDB.MEDIA_ARRAY_PHOTO], storeLocation, MediaHandler.PHOTO_MEDIA_DIR, routeId, i);
+	    		}
+    	}
+    	return true;
+	}
+	
 	
 	private Routes constructRoute(int routeId){
      	Routes r = new Routes(routeId);
@@ -74,14 +100,18 @@ public class DataAccess {
     	Log.v("DAL", "constructRoute: get routeLatLng info");
     	c = routeDB.getRouteLatLng(routeId);
     	Log.v("DAL", "constructRoute: routeLatLng collected");
-    	// get the route media array, first indexing the coordinate id and then the media array
+    	
+    	// Construct the route media array, first indexing the coordinate id and then the media array
+    	// And download media to phone if requested
     	String media[][] = new String[c.getCount()][];
+    	
     	for(int i=0;i<c.getCount();i++){
-    		media[i] = routeDB.getRouteMediaInfo(c.getInt(0));
+    		media[i] = routeDB.getRouteCoordinateMediaArray(c.getInt(0));
     		c.moveToNext();
     	}
     	
     	// initialize the coordinate class
+
     	c.moveToFirst();
     	for(int i=0;i<c.getCount();i++){    		
     		r.addCoordinate(c.getDouble(1), c.getDouble(2), media[i]);
@@ -90,7 +120,15 @@ public class DataAccess {
     	c.close();
 		return r;
 	}
-	
+
+	/*
+	private boolean downloadRouteContents(Routes route,String storeLocation){
+		MediaHandler mh = new MediaHandler();
+		route.
+		route.hasMediaAtCoordinate(i)
+		return true;
+	}
+	*/
 	
 	/**
 	 * @param start: The 

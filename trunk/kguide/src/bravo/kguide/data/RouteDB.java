@@ -13,10 +13,10 @@ import android.util.Log;
 
 public class RouteDB {
 
-	public final int MEDIA_ARRAY_TEXT = 0;
-	public final int MEDIA_ARRAY_LINK = 1;
-	public final int MEDIA_ARRAY_PHOTO = 2;
-	public final int MEDIA_ARRAY_AUDIO = 3;
+	public static final int MEDIA_ARRAY_TEXT = 0;
+	public static final int MEDIA_ARRAY_LINK = 1;
+	public static final int MEDIA_ARRAY_PHOTO = 2;
+	public static final int MEDIA_ARRAY_AUDIO = 3;
 	
     public static final String DB_NAME = "kGuideDB";
     public static final String DB_TABLE_ROUTES = "routesTable";
@@ -346,17 +346,21 @@ public class RouteDB {
         this.db.insert(RouteDB.DB_TABLE_MEDIA_PHOTOS, null, values);
     }
     
-    public String[] getRouteMediaInfo(final int coordinateId){
+    /**
+     * Returns the http string containing the media at given coordinateId
+     * @param coordinateId
+     * @return
+     */
+    public String[] getRouteCoordinateMediaArray(final int coordinateId){
     	Cursor c = null;
     	String routeMedia[] = new String[4];
     	
-    	// Get route text
     	try {
     		//Get text information
     		c = this.db.query(true, RouteDB.DB_TABLE_MEDIA_TEXTS, RouteDB.MEDIA_TEXTS_COLS, MEDIA_TEXTS_COLS[0]+"="+coordinateId, null, null, null, null, null);
     		if(c.getCount() > 0){
 	    		c.moveToFirst();
-	    		routeMedia[this.MEDIA_ARRAY_TEXT] = c.getString(1);
+	    		routeMedia[RouteDB.MEDIA_ARRAY_TEXT] = c.getString(1);
     		}
 	    	c.close();
 	    	
@@ -364,21 +368,22 @@ public class RouteDB {
     		c = this.db.query(true, RouteDB.DB_TABLE_MEDIA_LINKS, RouteDB.MEDIA_LINKS_COLS, MEDIA_LINKS_COLS[0]+"="+coordinateId, null, null, null, null, null);
     		if(c.getCount() > 0){
 	    		c.moveToFirst();
-	    		routeMedia[this.MEDIA_ARRAY_LINK] = c.getString(1);
+	    		routeMedia[RouteDB.MEDIA_ARRAY_LINK] = c.getString(1);
     		}
     		c.close();
     		//Get photo information
     		c = this.db.query(true, RouteDB.DB_TABLE_MEDIA_PHOTOS, RouteDB.MEDIA_PHOTOS_COLS, MEDIA_PHOTOS_COLS[0]+"="+coordinateId, null, null, null, null, null);
     		if(c.getCount() > 0){
 	    		c.moveToFirst();
-	    		routeMedia[this.MEDIA_ARRAY_PHOTO] = c.getString(1);
+	    		routeMedia[RouteDB.MEDIA_ARRAY_PHOTO] = c.getString(1);
     		}
     		c.close();
+    		
     		//Get audio information
     		c = this.db.query(true, RouteDB.DB_TABLE_MEDIA_AUDIO, RouteDB.MEDIA_AUDIO_COLS, MEDIA_AUDIO_COLS[0]+"="+coordinateId, null, null, null, null, null);
     		if(c.getCount() > 0){
 	    		c.moveToFirst();
-	    		routeMedia[this.MEDIA_ARRAY_AUDIO] = c.getString(1);
+	    		routeMedia[RouteDB.MEDIA_ARRAY_AUDIO] = c.getString(1);
     		}
     		c.close();
     	}

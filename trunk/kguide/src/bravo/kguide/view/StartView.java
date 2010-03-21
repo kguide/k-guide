@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import bravo.kguide.control.Controller;
+import bravo.kguide.data.MediaHandler;
 
 public class StartView extends Activity {
 	Controller controller = Controller.getInstance();
@@ -46,7 +47,15 @@ public class StartView extends Activity {
 	    ImageButton showMap = (ImageButton)findViewById(R.id.v_main_b03_showmap);
 	    showMap.setOnClickListener(new ImageButton.OnClickListener(){
 	    	public void onClick(View v){
-	    		; //does nothing at the moment
+	    		MediaHandler mh = new MediaHandler();
+	    		
+	    		boolean result = mh.storeFile("http://www.hgphoto.net/kguide/test/p2.jpg", MediaHandler.HOME_DIRECTORY_SD, MediaHandler.AUDIO_MEDIA_DIR, 8, 1);
+	    		if(result) {
+	    			Log.v("StartView","File downloaded and stored");
+	    		}
+	    		else
+	    			Log.v("Startview","Failed downloading file");
+	    		
 	    	}
 	    });
 	    
