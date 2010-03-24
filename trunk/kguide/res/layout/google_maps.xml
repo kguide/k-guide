@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mainlayout"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+		android:id="@+id/mainlayout"
+		android:orientation="vertical"
+		android:layout_width="320px"
+		android:layout_height="fill_parent" 
+		>
 
 
     <!--
-    Hordur desktop
-    android:apiKey="0eRJf97K_1wSxFAYbYR8hmNlYbTXF__K4NnI9EA" 
-    Hordur laptop Xubuntu
-  	android:apiKey="0FvknaoVW_Iy_DFOiQ1tgsvczvpAkd7zoRaWuqg"
-    
-    Ragnar lapp:
-    android:apiKey="0eRJf97K_1wQJ7dGUofj15wX2YY8mKyviLr14Gg"
-    -->
+       Hordur desktop
+         android:apiKey="0eRJf97K_1wSxFAYbYR8hmNlYbTXF__K4NnI9EA"
+       Hordur laptop Xubuntu
+         android:apiKey="0FvknaoVW_Iy_DFOiQ1tgsvczvpAkd7zoRaWuqg"
+       Ragnar lapp:
+         android:apiKey="0eRJf97K_1wQJ7dGUofj15wX2YY8mKyviLr14Gg"
+      -->
 
 
-<include android:id="@+id/googleMapsMapview" layout="@layout/googlemapsmapview" />
-<include android:id="@+id/infomenubuttons" layout="@layout/infomenubuttons" />
-<include android:id="@+id/playerlayout" layout="@layout/playerlayout" />
-<include android:id="@+id/googleMapsZoom" layout="@layout/zoomcontrols" />
 
+    <include android:id="@+id/googleMapsMapview" layout="@layout/googlemapsmapview" />
+    <include android:id="@+id/infomenubuttons" layout="@layout/infomenubuttons" />
+    <include android:id="@+id/playerlayout" layout="@layout/playerlayout" />
+    <include android:id="@+id/googleMapsZoom" layout="@layout/zoomcontrols" />
+    <include android:id="@+id/toppanel" layout="@layout/toppanel" />
 </AbsoluteLayout>
