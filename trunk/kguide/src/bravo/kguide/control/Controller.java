@@ -15,6 +15,8 @@ public class Controller {
     public RouteList routeList = new RouteList();
     public ServerConnection server;
     public DataAccess dal;
+    
+    public MediaHandler myMedia;
 
     public AudioPlay ourPlayer;
     public boolean storeMedia = true;
@@ -37,6 +39,7 @@ public class Controller {
     public void initData(Context context) {
     	// Need to load every route locally stored (but not if it has already been done)
 	ourPlayer = new AudioPlay();
+	myMedia = new MediaHandler();
 	this.loadInitialMapInfo(context);
     }    
 

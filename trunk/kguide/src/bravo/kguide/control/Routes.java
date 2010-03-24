@@ -8,12 +8,12 @@ import com.google.android.maps.GeoPoint;
 
 public class Routes {
 	
-	public final int MEDIA_TEXT = 1;
-	public final int MEDIA_PHOTO = 2;
-	public final int MEDIA_URL = 3;
-	public final int MEDIA_AUDIO = 4;
-	public final int NUMBER_OF_MEDIAS = 4;
-	
+    public final static int MEDIA_TEXT = 0;
+    public final static int MEDIA_PHOTO = 1;
+    public final static int MEDIA_URL = 2;
+    public final static int MEDIA_AUDIO = 3;
+    public final static int NUMBER_OF_MEDIAS = 4;
+    
     public int routeId;
     public int routeTypeId;
     public double routeLength;
