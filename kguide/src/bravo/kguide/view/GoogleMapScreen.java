@@ -1,9 +1,12 @@
 package bravo.kguide.view;
 
 import bravo.kguide.control.Controller;
+import bravo.kguide.control.Routes;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import android.util.Log;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -59,7 +62,7 @@ public class GoogleMapScreen extends MapActivity
     public static final int HELP_ID = Menu.FIRST+1;
     public static final int CURRENT_POS_ID = Menu.FIRST+2;
 
-    public static final int CURRENT_ZOOM_INFO = 18;
+    public static final int CURRENT_ZOOM_INFO = 16;
     public static final int ZOOM_WAIT = 2200;
     
     
@@ -71,13 +74,15 @@ public class GoogleMapScreen extends MapActivity
     public ImageButton photoButt;
 
     public ImageButton playButt;
-    public ImageButton forwardButt;
-    public ImageButton backwardButt;
 
     public AbsoluteLayout playOut;
+    public AbsoluteLayout topPanel;
     public SeekBar progressBar;
     public TextView elapsedTime;
     public TextView totalTime;
+    public TextView routeName;
+    public int myIndex;
+
 	
 
     public List<Overlay> listOfOverlays;
@@ -152,26 +157,20 @@ public class GoogleMapScreen extends MapActivity
  public void activatePlayerButtons() {
 	playButt.setEnabled(true);
 	playButt.setVisibility(1);
-	backwardButt.setEnabled(false);
-	backwardButt.setVisibility(1);
-	forwardButt.setEnabled(true);
-	forwardButt.setVisibility(1);
     }
 
     public void disablePlayerButtons() {
 	playButt.setEnabled(false);
 	playButt.setVisibility(8);
-	backwardButt.setEnabled(false);
-	backwardButt.setVisibility(8);
-	forwardButt.setEnabled(true);
-	forwardButt.setVisibility(8);
     }
 
     public void initPlayer() {
 	playOut = (AbsoluteLayout) findViewById(R.id.playerlayout);
+	topPanel = (AbsoluteLayout) findViewById(R.id.toppanel);
+
+
 	playButt = (ImageButton) findViewById(R.id.audio_play);
-	backwardButt = (ImageButton) findViewById(R.id.audio_backward);
-	forwardButt = (ImageButton) findViewById(R.id.audio_forward);
+	
 	progressBar = (SeekBar) findViewById(R.id.progressbar);
 	elapsedTime = (TextView) findViewById(R.id.elapsedTime);
 	totalTime = (TextView) findViewById(R.id.totalTime);
@@ -212,39 +211,65 @@ public class GoogleMapScreen extends MapActivity
     }
     
     public  boolean restorePanAndZoom() {
-	//Oldlocation;
-	//Oldzoom;
-
-	    isZoom = false;
-	    while (mapView.getZoomLevel() != oldZoom) {
-		if (mapView.getZoomLevel() < oldZoom) {
-		    mapController.zoomIn();
-		} 
-		else {
-		    mapController.zoomOut();
-		}
+	isZoom = false;
+	while (mapView.getZoomLevel() != oldZoom) {
+	    if (mapView.getZoomLevel() < oldZoom) {
+		mapController.zoomIn();
+	    } 
+	    else {
+		mapController.zoomOut();
 	    }
-	    
-	    mapController.animateTo(oldLocation);
-	    
-	    return true;
+	}
+	
+	mapController.animateTo(oldLocation);
+	
+	return true;
     }
     
 
-    private class OurOverlay extends ItemizedOverlay<OverlayItem> {
+    private class OurItem extends OverlayItem {
 	
-	private List<OverlayItem> items;
+	protected String audio = null;
+	protected String photo = null;
+	protected String url   = null;
+	protected int coordinateID;
+	
+	public OurItem(GeoPoint point, String title, String snippet, String audio, String photo, String url,int coordinateID)  {
+	    super( point,  title, snippet);
+	    this.audio = audio;
+	    this.photo = photo;
+	    this.url = url;
+	    this.coordinateID = coordinateID;
+	}
+	
+	protected boolean hasAudio() {
+	    return this.audio != null || this.audio.length() != 0;
+	}
+	
+	protected boolean hasUrl() {
+	    return this.url != null || this.url.length() != 0;
+	}
+	
+	protected boolean hasPhoto() {
+	    return this.photo != null || this.photo.length() != 0;
+	}
+	
+    }
+    
+    private class OurOverlay extends ItemizedOverlay<OurItem> {
+
+	private List<OurItem> items;
 	private Drawable marker;
 	
 	public OurOverlay(Drawable myMarker) {
 	    super(myMarker);
-	    items = new ArrayList<OverlayItem>();
+	    items = new ArrayList<OurItem>();
 	    marker = myMarker;
 	    populate();
 	}
 	
 	@Override
-	protected OverlayItem createItem(int i) {
+	protected OurItem createItem(int i) {
 	    return(items.get(i));
 	    
 	}
@@ -256,15 +281,12 @@ public class GoogleMapScreen extends MapActivity
 	}
 	
 	@Override
-	protected boolean onTap(int pIndex) {    
+	protected boolean onTap(int pIndex) {
 	    if (items.get(pIndex).getTitle().equals("clickable")) {
-		
 		panAndZoom(items.get(pIndex).getPoint());
 		Dialog dialog = new Dialog(context);
+		myIndex = pIndex;
 
-		dialog.setContentView(R.layout.cust1_diag);
-		dialog.setTitle("Choose media");
-		//dialog.show();
 		activateButtons();
 		
 		homeButt.setOnClickListener(new Button.OnClickListener() {
@@ -277,30 +299,58 @@ public class GoogleMapScreen extends MapActivity
 			}
 		    });
 		
+		
 		audioButt.setOnClickListener(new Button.OnClickListener() {
-			
 			@Override
                         public void onClick(View v) {
-			    disableButtons();
-			    restorePanAndZoom();
-			    
 			    Runnable update = new Runnable() {
 				    public void run() {
-					Animation down = AnimationUtils.loadAnimation(context, R.anim.push_up_in);
+					Animation down = AnimationUtils.loadAnimation(context, R.anim.push_down_out);
+										
+					down.setAnimationListener(new Animation.AnimationListener() 
+					    {
+						@Override
+						public void onAnimationEnd(Animation animation) {
+						    playOut.setVisibility(8);
+						}
+						@Override
+						public void onAnimationStart(Animation animation) {
+						}
+						@Override
+						public void onAnimationRepeat(Animation animation) {
+						}
+					    });
 					playOut.startAnimation(down);
-					playOut.setVisibility(8);
-					
 				    }
 				};
 			    
 			    
 			    handler.postDelayed(update,6000);
 			    Animation up = AnimationUtils.loadAnimation(context, R.anim.push_up_in);
-
+			    				    up.setAnimationListener(new Animation.AnimationListener() 
+				{
+				    @Override
+				    public void onAnimationStart(Animation animation) {
+					playOut.setVisibility(1);
+				    }
+				    @Override
+				    public void onAnimationEnd(Animation animation) {
+				    }
+				    @Override
+				    public void onAnimationRepeat(Animation animation) {
+				    }
+				});
 			    playOut.startAnimation(up);
-			    ctrl.ourPlayer.playAudio("marmelade.mp3",progressBar,elapsedTime,totalTime);
 			    playOut.setVisibility(1);
-
+			    
+			    File temp = ctrl.myMedia.getAudioFile(ctrl.routeList.current.routeId, items.get(myIndex).coordinateID);
+			    Log.i("Audio name : " ,temp.getPath() + temp.getName());
+			    if (items.get(myIndex).audio != null && temp != null) {
+				
+				ctrl.ourPlayer.playAudio(temp,progressBar,elapsedTime,totalTime);
+			    }
+			    
+			    
 			}
 		    });
 		
@@ -335,14 +385,14 @@ public class GoogleMapScreen extends MapActivity
 	    return(items.size());
 	}
 
-	public void addItem(OverlayItem item) {
+	public void addItem(OurItem item) {
 	    items.clear();
 	    items.add(item);
 	    setLastFocusedIndex(-1); 
 	    populate();
 	}
 	
-	public void addItemNotDelete(OverlayItem item) {
+	public void addItemNotDelete(OurItem item) {
 	    items.add(item);
 	    setLastFocusedIndex(-1); 
 	    populate();
@@ -395,7 +445,7 @@ public class GoogleMapScreen extends MapActivity
 	setContentView(R.layout.google_maps);
 	
 	mapView = (MapView) findViewById(R.id.googleMapsMapview);
-	mapView.setBuiltInZoomControls(true);   	
+	//mapView.setBuiltInZoomControls(true);   	
 	mapController = mapView.getController();
 
 	textButt = (ImageButton) findViewById(R.id.text);
@@ -403,7 +453,10 @@ public class GoogleMapScreen extends MapActivity
 	homeButt = (ImageButton) findViewById(R.id.home);
 	urlButt = (ImageButton) findViewById(R.id.url);
 	photoButt = (ImageButton) findViewById(R.id.photo);
+	photoButt = (ImageButton) findViewById(R.id.photo);
 	disableButtons();
+	routeName = (TextView) findViewById(R.id.routename);
+	routeName.setText(ctrl.routeList.current.routeName);
 	
 	initPlayer();
 	
@@ -437,14 +490,21 @@ public class GoogleMapScreen extends MapActivity
 	
 	infoPoint = new OurOverlay(exclaim);
 	
+
+	
 	if (!ctrl.isRouteListEmpty()) {
 	    for (int u = 0; u < ctrl.routeList.current.routePath.size();u++) {
 		if (ctrl.routeList.current.hasMediaAtCoordinate(u)) {
-		    infoPoint.addItemNotDelete(new OverlayItem(ctrl.routeList.current.routePath.get(u).p,"clickable",ctrl.routeList.current.routePath.get(u).mediaArray[0]));
+		    infoPoint.addItemNotDelete(new OurItem(ctrl.routeList.current.routePath.get(u).p,"clickable",
+							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_TEXT],
+							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_PHOTO],
+							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_URL],
+							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_AUDIO],
+							   u));
 		}
 	    }
-	    
 	}
+	
 	listOfOverlays.add(playerPos);
 	listOfOverlays.add(infoPoint);
 
@@ -491,8 +551,6 @@ public class GoogleMapScreen extends MapActivity
     }
 
 
-    
-   
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 	switch (item.getItemId()) {
@@ -530,13 +588,18 @@ public class GoogleMapScreen extends MapActivity
 	    mapController.animateTo(ctrl.routeList.nextRoute().routePath.get(0).p);
 	    for (int u = 0; u < ctrl.routeList.current.routePath.size();u++) {
 		if (ctrl.routeList.current.hasMediaAtCoordinate(u)) {
-		    infoPoint.addItemNotDelete(new OverlayItem(ctrl.routeList.current.routePath.get(u).p,"clickable",ctrl.routeList.current.routePath.get(u).mediaArray[0]));
+		    infoPoint.addItemNotDelete(new OurItem(ctrl.routeList.current.routePath.get(u).p,"clickable",
+							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_TEXT],
+							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_PHOTO],
+							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_URL],
+							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_AUDIO],
+							   u));
 		}
 	    }
 	    listOfOverlays.add(infoPoint);
 	    listOfOverlays.add(playerPos);
 	    
-	    
+	    routeName.setText(ctrl.routeList.current.routeName);
 	    mapController.setZoom(15);
 	    this.mapView.invalidate();
 	    break;
