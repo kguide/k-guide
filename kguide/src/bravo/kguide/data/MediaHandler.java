@@ -52,7 +52,6 @@ public class MediaHandler {
 			
 			byte[] buffer = new byte[1024];
 			int length;
-			
 			File destinationFile = new File(storeDirectory + fileName);
 			OutputStream out = new FileOutputStream(destinationFile);
 			while( (length=in.read(buffer))>0){
@@ -74,7 +73,6 @@ public class MediaHandler {
 	 * @param connectionString : A http url pointing to the file
 	 * @param basePathConst : Where to store the file on phone, should be one of the constants
 	 * HOME_DIRECTORY_PHONE, HOME_DIRECTORY_SD, HOME_CACHE_DIR
-	 * @param localName : The name of the file
 	 * @param mediaTypeConst : The type of media, should be one of the constants AUDIO_MEDIA_DIR or PHOTO_MEDIA_DIR
 	 * @param routeId : The id of the route
 	 * @param coordinateId : The coordinate having the media
@@ -111,14 +109,18 @@ public class MediaHandler {
 		}
 
 		// Extract the filename from the url
+		
+		fileName = extractFilenameFromUrl(connectionString);
+		/*
 		fileName = new StringBuffer(connectionString).reverse().toString();
 		fileName = fileName.substring(0,fileName.indexOf("/"));
 		fileName = new StringBuffer(fileName).reverse().toString();
+		*/
 		
 		Log.i("MediaHandler", this.storeDirectory+fileName);
 		return startCopy(connectionString);
 	}
-	
+
 	/**
 	 * Returns a File object if the file exists in any of the three store folders
 	 * @param fileName : name of the file
@@ -127,22 +129,33 @@ public class MediaHandler {
 	 * @param mediaType : the type of media
 	 * @return
 	 */
-	public File getFile(String fileName, int routeId, int coordinateId, String mediaType){
+	public File getFile(String url, int routeId, int coordinateId, String mediaType){
 		//Try finding it in any of the three store locations
-		File file = new File(HOME_DIRECTORY_SD+mediaType+"/"+routeId+"/"+coordinateId);
-		if(file.exists()){
-			return file;
-		}
-
-		file = new File(HOME_DIRECTORY_PHONE+mediaType+"/"+routeId+"/"+coordinateId);
+		String filename = extractFilenameFromUrl(url);
+		String relPath = mediaType+routeId+"/"+coordinateId+"/"+filename;
+		Log.i("MediaHandler","Retr. file at path: "+relPath);
+		File file = new File(HOME_DIRECTORY_SD+relPath);
 		if(file.exists()){
 			return file;
 		}
 		
-		file = new File(HOME_CACHE_DIR+mediaType+"/"+routeId+"/"+coordinateId);
+		file = new File(HOME_DIRECTORY_PHONE+relPath);
+		if(file.exists()){
+			return file;
+		}
+		
+		file = new File(HOME_CACHE_DIR+relPath);
 		if(file.exists()){
 			return file;
 		}
 		return null;
+	}
+	
+	private String extractFilenameFromUrl(String url){
+		String fn;
+		fn = new StringBuffer(url).reverse().toString();
+		fn = fn.substring(0,fn.indexOf("/"));
+		fn = new StringBuffer(fn).reverse().toString();		
+		return fn;
 	}
 }
