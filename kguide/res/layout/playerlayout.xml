@@ -20,19 +20,9 @@
        android:layout_height="wrap_content" 
        android:background="#DD333344"
        android:orientation="horizontal"
-       android:gravity="center"
+       android:gravity="left"
        android:padding="2px"
        > 
-      <ImageButton
-	 android:paddingLeft="8px"
-	 android:paddingRight="8px"
-	 android:id="@+id/audio_backward"
-	 android:layout_width="wrap_content"
-	 android:layout_height="wrap_content"
-	 android:src="@drawable/btn_back"
-	 android:background="@null"
-	 >
-      </ImageButton>
       <ImageButton
 	 android:paddingLeft="8px"
 	 android:paddingRight="8px"
@@ -43,16 +33,7 @@
 	 android:background="@null"
 	 >
       </ImageButton>
-      <ImageButton
-	 android:paddingLeft="8px"
-	 android:paddingRight="8px"
-	 android:id="@+id/audio_forward"
-	 android:layout_width="wrap_content"
-	 android:layout_height="wrap_content"
-	 android:src="@drawable/btn_forward"
-	 android:background="@null"
-	 >
-      </ImageButton>
+      
     </LinearLayout>
     <LinearLayout 
        android:id="@+id/playerInfo" 
