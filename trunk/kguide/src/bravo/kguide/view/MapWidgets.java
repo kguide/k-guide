@@ -89,13 +89,6 @@ public class MapWidgets extends com.google.android.maps.Overlay {
 		    }
 		    
 		    
-		    
-		    myPaint.setARGB(160,200,250,35); 
-		    ourCanvas.drawText(ctrl.routeList.current.routeName, 10,20, myPaint);
-		    myPaint.setARGB(200,0,0,35); 
-		    ourCanvas.drawText(ctrl.routeList.current.routeName, 12,22, myPaint); 
-		    
-		    
 		}
 	    });
 

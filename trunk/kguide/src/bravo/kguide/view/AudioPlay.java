@@ -68,14 +68,14 @@ public class AudioPlay {
     	}
     }
     
-    public void playAudio(String audio,SeekBar progressBar,TextView timeDone, TextView totalTime) {
+    public void playAudio(File audio,SeekBar progressBar,TextView timeDone, TextView totalTime) {
 	try {
-	    this.audioFile = audio;
 	    this.progressBar = progressBar;
 	    this.timeDone = timeDone;
 	    this.totalTime = totalTime;
 	    mp.reset();
-	    FileInputStream fs = new FileInputStream(MEDIA_PATH + audio);
+
+	    FileInputStream fs = new FileInputStream(audio);
 	    FileDescriptor fd = fs.getFD(); 
 	    mp.setDataSource(fd);
 	    mp.prepare();
