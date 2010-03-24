@@ -130,7 +130,7 @@ public class MediaHandler {
 	 * @return
 	 */
 	public File getFile(String url, int routeId, int coordinateId, String mediaType){
-		//Try finding it in any of the three store locations
+		//Try finding it in any of the three store locations		
 		String filename = extractFilenameFromUrl(url);
 		String relPath = mediaType+routeId+"/"+coordinateId+"/"+filename;
 		Log.i("MediaHandler","Retr. file at path: "+relPath);
@@ -143,13 +143,41 @@ public class MediaHandler {
 		if(file.exists()){
 			return file;
 		}
-		
+
 		file = new File(HOME_CACHE_DIR+relPath);
 		if(file.exists()){
 			return file;
 		}
 		return null;
 	}
+
+	/**
+	 * Returns a File object if the file exists in any of the three store folders
+	 * @param fileName : name of the file
+	 * @param routeId : id of the route
+	 * @param coordinateId : id of the route's coordinate 
+	 * @param mediaType : the type of media
+	 * @return 
+	 */
+	public File getAudioFile(int routeId, int coordinateId){
+		//Try finding it in any of the three store locations		
+		String relPath = MediaHandler.AUDIO_MEDIA_DIR+routeId+"/"+coordinateId+"/";
+		String[] locations = {MediaHandler.HOME_DIRECTORY_PHONE , MediaHandler.HOME_DIRECTORY_SD , MediaHandler.HOME_CACHE_DIR}; 
+		//Try to find the file at this coordinate if it exists else return null		
+		String fileList[];
+		File file;
+		for(int i=0; i<locations.length;i++){			
+			file = new File(locations[i]+relPath);
+			Log.i("MediaHandler",locations[i]+relPath);
+			if(file.isDirectory()){
+				fileList = file.list();
+				Log.i("MediaHandler: ",locations[0]+relPath+fileList[0]);
+				return new File(locations[0]+relPath+fileList[0]);
+			}
+		}
+		return null;
+	}
+	
 	
 	private String extractFilenameFromUrl(String url){
 		String fn;
