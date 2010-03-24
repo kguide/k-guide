@@ -168,17 +168,47 @@ public class MediaHandler {
 		File file;
 		for(int i=0; i<locations.length;i++){			
 			file = new File(locations[i]+relPath);
-			Log.i("MediaHandler",locations[i]+relPath);
 			if(file.isDirectory()){
 				fileList = file.list();
-				Log.i("MediaHandler: ",locations[0]+relPath+fileList[0]);
-				return new File(locations[0]+relPath+fileList[0]);
+				Log.i("MediaHandler: ","Returning audio file at: "+locations[i]+relPath+fileList[0]);
+				return new File(locations[i]+relPath+fileList[0]);
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns the dir to the folder containing all photos for this coordinate
+	 * @param routeId : Id of the route
+	 * @param coordinateId
+	 * @return returns a file object pointing to the directory if it has any photos
+	 */
+	public File getPhotoDirectory(int routeId,int coordinateId){
+		//Try finding it in any of the three store locations		
+		String relPath = MediaHandler.PHOTO_MEDIA_DIR+routeId+"/"+coordinateId+"/";
+		String[] locations = {MediaHandler.HOME_DIRECTORY_PHONE , MediaHandler.HOME_DIRECTORY_SD , MediaHandler.HOME_CACHE_DIR}; 
+		//Try to find the file at this coordinate if it exists else return null		
+		String fileList[];
+		File file;
+		for(int i=0; i<locations.length;i++){			
+			file = new File(locations[i]+relPath);
+			if(file.isDirectory()){
+				fileList = file.list();
+				if(fileList.length>0) {
+					Log.i("MediaHandler: ","Returning photo directory: "+locations[i]+relPath);
+					return new File(locations[i]+relPath);
+				}
 			}
 		}
 		return null;
 	}
 	
 	
+	/**
+	 * Extracts filename from a url pointing to a file
+	 * @param url
+	 * @return filename of the url
+	 */
 	private String extractFilenameFromUrl(String url){
 		String fn;
 		fn = new StringBuffer(url).reverse().toString();
