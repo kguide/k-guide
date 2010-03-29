@@ -16,11 +16,12 @@
          android:apiKey="0eRJf97K_1wQJ7dGUofj15wX2YY8mKyviLr14Gg"
       -->
 
-
+    
 
     <include android:id="@+id/googleMapsMapview" layout="@layout/googlemapsmapview" />
     <include android:id="@+id/infomenubuttons" layout="@layout/infomenubuttons" />
     <include android:id="@+id/playerlayout" layout="@layout/playerlayout" />
     <include android:id="@+id/googleMapsZoom" layout="@layout/zoomcontrols" />
     <include android:id="@+id/toppanel" layout="@layout/toppanel" />
+    <include android:id="@+id/mygal" layout="@layout/gallery" />
 </AbsoluteLayout>
