@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AbsoluteLayout 
+   xmlns:android="http://schemas.android.com/apk/res/android"
+   android:id="@+id/mygal"
+   android:layout_width="320px"
+   android:layout_height="480px"
+   android:layout_x="0px"
+   android:layout_y="0px"
+  
+   >
+
+
+  <LinearLayout
+     android:id="@+id/cover" 
+     android:layout_width="fill_parent" 
+     android:layout_height="fill_parent" 
+     android:orientation="vertical"
+     > 
+    <Gallery
+       android:id="@+id/gallery" 
+       android:background="#FF333333"
+       android:layout_width="fill_parent" 
+       android:layout_height="100px" 
+       android:gravity="top"
+       /> 
+    <ImageSwitcher
+       android:id="@+id/imswitch" 
+       android:layout_width="fill_parent" 
+       android:layout_height="275px"                 
+       android:layout_alignParentLeft="true" 
+       android:layout_alignParentRight="true" 
+       android:layout_alignParentBottom="true"    
+       android:gravity="bottom"
+       /> 
+    <Button
+       android:gravity="center"
+       android:paddingLeft="2px"
+       android:paddingRight="2px"
+       android:id="@+id/photo_home"
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:text="Back"
+       >
+  </Button>
+    
+  </LinearLayout>
+  
+  
+</AbsoluteLayout>
