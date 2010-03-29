@@ -28,12 +28,11 @@ class OggFilter implements FilenameFilter {
 }
 
 public class AudioPlay {
+
+    public boolean playing;
     
-    private static final String MEDIA_PATH = new String("/sdcard/");
     private String audioFile;
-    private MediaPlayer mp = new MediaPlayer();
-
-
+    public MediaPlayer mp = new MediaPlayer();
 
     public int position;
     public int duration;
@@ -54,7 +53,7 @@ public class AudioPlay {
 	    duration = mp.getDuration();
 	    position = mp.getCurrentPosition();
 	    float progress = ((float)position/(float)duration);
-	    timeDone.setText( Integer.toString(position/1000));
+	    timeDone.setText( padTime(position/1000));
 	    progressBar.setProgress((int)(progress*progressBar.getMax()));
 	    
 	    Runnable update = new Runnable() {
@@ -67,6 +66,15 @@ public class AudioPlay {
 	    handler.postDelayed(update,1000);
     	}
     }
+
+    public String padTime(int pad) {
+	int totalSeconds =  pad;
+	String minutes = Integer.toString(totalSeconds/60);
+	String seconds = Integer.toString(totalSeconds % 60);
+	if (minutes.length()<2) {minutes = "0" + minutes;}
+	if (seconds.length()<2) {seconds = "0" + seconds;}
+	return minutes +":"+ seconds;
+    }
     
     public void playAudio(File audio,SeekBar progressBar,TextView timeDone, TextView totalTime) {
 	try {
@@ -74,15 +82,16 @@ public class AudioPlay {
 	    this.timeDone = timeDone;
 	    this.totalTime = totalTime;
 	    mp.reset();
-
+	    
 	    FileInputStream fs = new FileInputStream(audio);
 	    FileDescriptor fd = fs.getFD(); 
 	    mp.setDataSource(fd);
 	    mp.prepare();
 	    
 	    mp.start();
+	    playing = true;
 	    duration = mp.getDuration();
-	    this.totalTime.setText( Integer.toString(this.duration/1000));
+	    this.totalTime.setText(padTime(this.duration/1000));
 	    this.myUpdate();
 		    
 	} 
@@ -94,13 +103,15 @@ public class AudioPlay {
     
     public void togglePausePlay() {
 	if (mp.isPlaying()) {
-	    position = mp.getCurrentPosition();
 	    mp.pause();
+	    playing = !playing;
 	} 
 	else {
+	    playing = !playing;
 	    mp.start();
+	    this.myUpdate();
 	}
-
+	
     }
 
 }
