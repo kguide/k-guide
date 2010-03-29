@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 class OggFilter implements FilenameFilter {
     public boolean accept(File dir, String name) {
@@ -37,7 +38,7 @@ public class AudioPlay {
     public int position;
     public int duration;
 
-    public TextView timeDone;
+    public TextView timeDonee;
     public TextView totalTime;
 
     
@@ -48,12 +49,14 @@ public class AudioPlay {
     private final Handler handler = new Handler();
     
 
+
+    
     public void myUpdate() {
 	if (mp.isPlaying()) {
 	    duration = mp.getDuration();
 	    position = mp.getCurrentPosition();
 	    float progress = ((float)position/(float)duration);
-	    timeDone.setText( padTime(position/1000));
+	    timeDonee.setText( padTime(position/1000));
 	    progressBar.setProgress((int)(progress*progressBar.getMax()));
 	    
 	    Runnable update = new Runnable() {
@@ -61,11 +64,14 @@ public class AudioPlay {
 			myUpdate();
 		    }
 		};
-	    
-	    
 	    handler.postDelayed(update,1000);
     	}
     }
+
+    public void updateTime() {
+	
+    }
+
 
     public String padTime(int pad) {
 	int totalSeconds =  pad;
@@ -77,10 +83,33 @@ public class AudioPlay {
     }
     
     public void playAudio(File audio,SeekBar progressBar,TextView timeDone, TextView totalTime) {
+	
 	try {
 	    this.progressBar = progressBar;
-	    this.timeDone = timeDone;
+	    this.timeDonee = timeDone;
 	    this.totalTime = totalTime;
+	    progressBar.setOnSeekBarChangeListener(
+		        new OnSeekBarChangeListener() {
+			    long duration;
+			    public void onStartTrackingTouch(SeekBar bar) {
+				myPause();
+				duration = mp.getDuration();
+			    }
+			    public void onProgressChanged(SeekBar bar, int progress, boolean fromtouch) {
+				if (fromtouch) {
+				    long newposition = (duration * progress) / 1000L;
+				    mp.seekTo( (int) newposition);
+
+				    timeDonee.setText(padTime( mp.getCurrentPosition()/1000));
+				}
+			    }
+			    public void onStopTrackingTouch(SeekBar bar) {
+				myPlay();
+			    }
+			});
+	    
+
+
 	    mp.reset();
 	    
 	    FileInputStream fs = new FileInputStream(audio);
@@ -100,18 +129,27 @@ public class AudioPlay {
 	} 
     }
     
+
+
+    public void myPause() {
+	    mp.pause();
+	    playing = false;
+    }
     
+    public void myPlay() {
+	playing = true;
+	mp.start();
+	this.myUpdate();
+    }
+
+
     public void togglePausePlay() {
 	if (mp.isPlaying()) {
-	    mp.pause();
-	    playing = !playing;
+	    myPause();
 	} 
 	else {
-	    playing = !playing;
-	    mp.start();
-	    this.myUpdate();
+	    myPlay();
 	}
-	
     }
 
 }
