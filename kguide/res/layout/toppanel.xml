@@ -4,8 +4,8 @@
    android:id="@+id/top_panel"
    android:layout_width="320px"
    android:layout_height="66px"
-   android:layout_x="0px"
-   android:layout_y="0px"
+   android:layout_x="1px"
+   android:layout_y="1px"
    android:gravity="top"
    android:orientation="vertical" 
    android:background="@drawable/topborder" 
@@ -25,16 +25,22 @@
      android:orientation="vertical"
      > 
   <TextView
+     android:inputType="text"
+     android:maxLines="1"
+     android:ellipsize="marquee"
+     android:marqueeRepeatLimit="marquee_forever"
+     android:scrollHorizontally="true"
      android:id="@+id/routename"
      android:layout_width="240px"
      android:layout_height="30px"
      android:background="@drawable/overborder" 
      android:typeface="monospace"
      android:textStyle="bold"
-     android:gravity="center"
      android:textSize="18sp"
      android:textColor="#EEEEEE"
      android:padding="1px"
+     android:focusable="true"
+     android:focusableInTouchMode="true"
      >
   </TextView>
   <LinearLayout
@@ -72,7 +78,14 @@
        >
     </ImageButton>
     <ImageButton
-       android:layout_marginLeft="46px"
+       android:id="@+id/next_route"
+       android:src="@drawable/btn_next"
+       android:layout_width="32px"
+       android:layout_height="32px"
+       >
+    </ImageButton>
+    <ImageButton
+       android:layout_marginLeft="14px"
        android:id="@+id/zoomin"
        android:src="@drawable/btn_zoomin"
        android:layout_width="32px"

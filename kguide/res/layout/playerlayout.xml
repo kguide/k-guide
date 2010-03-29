@@ -29,7 +29,17 @@
 	 android:id="@+id/audio_play"
 	 android:layout_width="wrap_content"
 	 android:layout_height="wrap_content"
-	 android:src="@drawable/btn_play"
+	 android:src="@drawable/btn_pause"
+	 android:background="@null"
+	 >
+      </ImageButton>
+       <ImageButton
+	 android:paddingLeft="8px"
+	 android:paddingRight="8px"
+	 android:id="@+id/audio_stop"
+	 android:layout_width="wrap_content"
+	 android:layout_height="wrap_content"
+	 android:src="@drawable/btn_stop"
 	 android:background="@null"
 	 >
       </ImageButton>
