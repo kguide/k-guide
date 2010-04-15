@@ -206,9 +206,19 @@ public class RouteDB {
     
     private void insertRoute(final int routeId, final int typeId, final String name, final double routeLength) {
         ContentValues values = new ContentValues();
+	String[] splits;
         values.put("routeId", routeId);
         values.put("typeId", typeId);
-        values.put("name", name);
+
+	
+	splits = name.split ("\\$\\#");
+	if (splits.length == 2) {
+	    values.put("name", splits[0]);
+	}
+	else {
+	    values.put("name", name);
+	}
+        
         values.put("route_length",routeLength);
         this.db.insert(RouteDB.DB_TABLE_ROUTES, null, values);
     }

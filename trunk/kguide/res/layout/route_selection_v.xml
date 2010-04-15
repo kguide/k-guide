@@ -4,12 +4,30 @@
     android:layout_width="320px"
     android:layout_height="480px"
     android:background="@drawable/v_routesel_bg"
-    >    
-    <ListView	android:id="@android:id/list" 
-    			style="@style/MyListView"
-        	/>
-   	  <TextView android:id="@android:id/empty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/noRoutesFound"/> 
- </LinearLayout>
+    android:gravity="top"
+    > 
+   
+    <ListView
+       android:id="@android:id/list" 
+       android:layout_height="200px"
+       style="@style/MyListView"
+       />
+    <TextView 
+       android:id="@android:id/empty"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="@string/noRoutesFound"/> 
+    <ScrollView 
+       android:gravity="top"
+       style="@style/MyScrollView"
+       android:id="@+id/textScroll" 
+       android:layout_width="fill_parent" 
+       android:layout_height="fill_parent">
+      <TextView 
+	 android:gravity="top"
+	 android:id="@+id/descriptionView"
+	 android:layout_width="fill_parent"
+	 android:layout_height="fill_parent"
+	 ></TextView> 
+    </ScrollView> 
+</LinearLayout>

@@ -671,8 +671,7 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 
 
 
-    class MapOverlay extends com.google.android.maps.Overlay
-    {
+    class MapOverlay extends com.google.android.maps.Overlay {
 	private List<Bitmap> items;
 	private int animcounter;
 	private long deltaTimer;
@@ -688,8 +687,7 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	}
         @Override
 	public void draw(Canvas canvas, MapView mapView, 
-			 boolean shadow) 
-        {
+			 boolean shadow) {
 	    super.draw(canvas, mapView, shadow);
 	    myWidget.draw(canvas, mapView, shadow);
 	    mapView.getProjection().toPixels(playerPosition, screenPts);
