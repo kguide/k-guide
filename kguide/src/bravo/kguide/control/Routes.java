@@ -18,6 +18,7 @@ public class Routes {
     public int routeTypeId;
     public double routeLength;
     public String routeName;
+    public String extraInfo;
     public ArrayList<Coordinate> routePath = new ArrayList<Coordinate>();
     public DataAccess dal;
     
@@ -30,9 +31,18 @@ public class Routes {
     }
     
     public Routes(int id, String name) {
-		this.routeId = id;
-		this.routeName = name;
-    }
+	String[] splits;
+	splits = name.split ("\\$\\#");
+	this.routeId = id;
+	if (splits.length == 2) {
+	    this.routeName = splits[0];
+	    this.extraInfo = splits[1];
+	}
+	else {
+	    this.routeName = name;
+	    this.extraInfo = "No info available\n";
+	}
+      }
 
     /**
      * Adds coordinate to the coordinate list
