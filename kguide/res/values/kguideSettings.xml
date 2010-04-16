@@ -1,0 +1,12 @@
+<resources>
+<string-array name="settingsArray">
+	<item>storeLocation</item>
+	<item>storeMedia</item>
+</string-array>
+
+<string-array name="settingsValues">
+	<item>123</item>
+	<item>12345</item>
+</string-array>
+
+</resources>

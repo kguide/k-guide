@@ -1,6 +1,8 @@
 package bravo.kguide.view;
 
 
+import java.io.File;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -26,7 +28,7 @@ public class StartView extends Activity {
 	    		controller.debugPrintRouteList();
 	    		if(controller.getRouteListCount() == 0 & controller.hasRoutesOnPhone(context)){
 	    			controller.loadInitialMapInfo(context);
-		    		Intent startGoogleMapScreen = new Intent(StartView.this,GoogleMapScreen.class);
+    		Intent startGoogleMapScreen = new Intent(StartView.this,GoogleMapScreen.class);
 		    		startActivity(startGoogleMapScreen);    				    		
 	    		}
 	    		else if(controller.getRouteListCount() > 0){
@@ -48,14 +50,20 @@ public class StartView extends Activity {
 	    showMap.setOnClickListener(new ImageButton.OnClickListener(){
 	    	public void onClick(View v){
 	    		MediaHandler mh = new MediaHandler();
+	    		File fh = mh.getPhotoDirectory(8, 0);
+	    		if(fh != null)
+	    			Log.v("StartView","File is: "+fh.getPath());
+	    		else
+	    			Log.v("StartView","file is null");
 	    		
+	    		/*
 	    		boolean result = mh.storeFile("http://www.hgphoto.net/kguide/test/p2.jpg", MediaHandler.HOME_DIRECTORY_SD, MediaHandler.AUDIO_MEDIA_DIR, 8, 1);
 	    		if(result) {
 	    			Log.v("StartView","File downloaded and stored");
 	    		}
 	    		else
 	    			Log.v("Startview","Failed downloading file");
-	    		
+	    		*/
 	    	}
 	    });
 	    
