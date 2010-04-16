@@ -381,6 +381,7 @@ public class RouteDB {
 	    		routeMedia[RouteDB.MEDIA_ARRAY_LINK] = c.getString(1);
     		}
     		c.close();
+    		
     		//Get photo information
     		c = this.db.query(true, RouteDB.DB_TABLE_MEDIA_PHOTOS, RouteDB.MEDIA_PHOTOS_COLS, MEDIA_PHOTOS_COLS[0]+"="+coordinateId, null, null, null, null, null);
     		if(c.getCount() > 0){

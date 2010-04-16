@@ -25,7 +25,6 @@ public class MediaHandler {
 	public final static String AUDIO_MEDIA_DIR = "audio/";
 	public final static String PHOTO_MEDIA_DIR = "photo/";
 	
-	
 	public MediaHandler(){
 	}
 	
@@ -203,12 +202,11 @@ public class MediaHandler {
 		return null;
 	}
 	
-	
 	/**
-	 * Extracts filename from a url pointing to a file
-	 * @param url
-	 * @return filename of the url
-	 */
+	* Extracts filename from a url pointing to a file
+	* @param url
+	* @return filename of the url
+	*/
 	private String extractFilenameFromUrl(String url){
 		String fn;
 		fn = new StringBuffer(url).reverse().toString();

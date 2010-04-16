@@ -3,8 +3,11 @@ package bravo.kguide.data;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
+import bravo.kguide.control.OverlayList;
 import bravo.kguide.control.RouteList;
 import bravo.kguide.control.Routes;
+
+import com.google.android.maps.Overlay;
 
 public class DataAccess {
 	private static RouteDB routeDB;
@@ -142,4 +145,12 @@ public class DataAccess {
 		Log.v("DAL","Number of items in sel.list"+r.routes.size());
 		return r;
 	}
+	
+	
+	//public static OverlayList[] getoverlayList(){
+	//	OverlayList list[] = new OverlayList[5];
+	//	Overlay test = new Overlay();
+		//list[0].addRoute(OverlayItem.)
+	//	return list;
+	//}
 }

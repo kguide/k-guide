@@ -1,63 +1,49 @@
 package bravo.kguide.view;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-
-import bravo.kguide.view.PhotoViewer;
-import bravo.kguide.control.Controller;
-import bravo.kguide.control.Routes;
-
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
-
-
-import java.util.ArrayList;
-import java.util.List;
-
-import android.util.Log;
-
-import android.view.ViewGroup; 
-import android.widget.BaseAdapter; 
-import android.widget.Gallery; 
-import android.widget.ImageView; 
-
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
-
-
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-
-import android.widget.ImageView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
-
-import java.lang.String;
-import android.widget.BaseAdapter; 
+import java.util.ArrayList;
+import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.graphics.Paint; 
-import android.graphics.Bitmap; 
-import android.graphics.BitmapFactory; 
 import android.view.View;
-import android.graphics.Point;
-
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.AbsoluteLayout;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.Gallery;
+import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Gallery.LayoutParams;
 import android.widget.ViewSwitcher.ViewFactory;
-
+import bravo.kguide.control.Controller;
+import bravo.kguide.control.OverlayList;
+import bravo.kguide.control.Routes;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
@@ -66,20 +52,6 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.Gallery;
-import android.widget.Gallery.LayoutParams;
-import android.widget.ViewSwitcher.ViewFactory;
-import android.widget.ImageSwitcher;
-import android.widget.ImageView;
-
-import android.widget.*;
-
-import android.os.Handler;
 
 class Mp3Filter implements FilenameFilter {
     public boolean accept(File dir, String name) {
@@ -364,6 +336,7 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 			}
 		    }
 		    listOfOverlays.add(infoPoint);
+		    
 		    listOfOverlays.add(playerPos);
 		    
 		    routeName.setText(ctrl.routeList.current.routeName);
@@ -678,20 +651,21 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	private Bitmap walker = BitmapFactory.decodeResource(getResources(), R.drawable.overlay_user_walk);
 	Point screenPts;
 
-
+	
 	public MapOverlay() {
 	    animcounter = 0;
 	    deltaTimer = 0;
 	    screenPts = new Point();
 
 	}
+	
         @Override
 	public void draw(Canvas canvas, MapView mapView, 
 			 boolean shadow) {
 	    super.draw(canvas, mapView, shadow);
 	    myWidget.draw(canvas, mapView, shadow);
 	    mapView.getProjection().toPixels(playerPosition, screenPts);
-	    canvas.drawBitmap(walker, screenPts.x-8, screenPts.y-8, null); 
+	    canvas.drawBitmap(walker, screenPts.x-8, screenPts.y-8, null); 	    
         }
     }
 
@@ -793,12 +767,15 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 		}
 	    }
 	}
-	
 	listOfOverlays.add(playerPos);
 	listOfOverlays.add(infoPoint);
-
-	mapView.invalidate();
 	
+	
+	OverlayList ol = ctrl.getSimpleOverlays(context);
+	while(ol.hasNext()){
+		listOfOverlays.add(ol.next());
+	}
+	mapView.invalidate();
 	//End Display Map           
 	
 	// Set up the location listener to listen for new GPS locations
@@ -888,7 +865,8 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	    listOfOverlays.add(infoPoint);
 	    listOfOverlays.add(playerPos);
 	    
-	    routeName.setText(ctrl.routeList.current.routeName);
+
+		routeName.setText(ctrl.routeList.current.routeName);
 	    mapController.setZoom(15);
 	    this.mapView.invalidate();
 	    break;
