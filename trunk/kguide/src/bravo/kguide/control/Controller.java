@@ -156,7 +156,34 @@ public class Controller {
     	swimmingOverlay.add(new GeoPoint((int) (1E6*64.06015033893178),(int) (1E6*-21.961691379547120)));
     	swimmingOverlay.add(new GeoPoint((int) (1E6*64.05222728359249),(int) (1E6*-21.975359916687010)));
     	ol.addOverlay(swimmingOverlay, R.drawable.o_swimming,12);
-    	
+
+
+	ArrayList<GeoPoint> museumOverlay = new ArrayList<GeoPoint>();
+    	museumOverlay.clear();
+	museumOverlay.add(new GeoPoint((int) (1E6*64.16035919662922),(int) (1E6*-22.00664520263672)));
+	museumOverlay.add(new GeoPoint((int) (1E6*64.15796487639479),(int) (1E6*-22.006473541259766))); 
+	museumOverlay.add(new GeoPoint((int) (1E6*64.1506684081135),(int) (1E6*-21.960554122924805))); 
+	museumOverlay.add(new GeoPoint((int) (1E6*64.15362464435712),(int) (1E6*-21.947250366210938))); 
+	museumOverlay.add(new GeoPoint((int) (1E6*64.13928957439484),(int) (1E6*-21.951026916503906))); 
+	museumOverlay.add(new GeoPoint((int) (1E6*64.14415609372006),(int) (1E6*-21.94570541381836)));  
+	museumOverlay.add(new GeoPoint((int) (1E6*64.14703816840174),(int) (1E6*-21.943817138671875))); 
+	museumOverlay.add(new GeoPoint((int) (1E6*64.14902176026892),(int) (1E6*-21.940813064575195))); 
+	museumOverlay.add(new GeoPoint((int) (1E6*64.1489843353191),(int) (1E6*-21.929826736450195))); 
+	museumOverlay.add(new GeoPoint((int) (1E6*64.14666388989184),(int) (1E6*-21.93523406982422)));  
+	museumOverlay.add(new GeoPoint((int) (1E6*64.14602760484519),(int) (1E6*-21.929655075073242))); 
+	museumOverlay.add(new GeoPoint((int) (1E6*64.1443058192523),(int) (1E6*-21.938581466674805))); 
+	museumOverlay.add(new GeoPoint((int) (1E6*64.14086192774185),(int) (1E6*-21.92819595336914)));  
+	museumOverlay.add(new GeoPoint((int) (1E6*64.14569074215227),(int) (1E6*-21.91875457763672)));  
+	museumOverlay.add(new GeoPoint((int) (1E6*64.13794177209914),(int) (1E6*-21.9136905670166)));	  
+	museumOverlay.add(new GeoPoint((int) (1E6*64.12884239566569),(int) (1E6*-21.91969871520996)));  
+	museumOverlay.add(new GeoPoint((int) (1E6*64.14134859049841),(int) (1E6*-21.885623931884766))); 
+	museumOverlay.add(new GeoPoint((int) (1E6*64.11966510946355),(int) (1E6*-21.836271286010742))); 
+	museumOverlay.add(new GeoPoint((int) (1E6*64.11865354966504),(int) (1E6*-21.818246841430664))); 
+	museumOverlay.add(new GeoPoint((int) (1E6*64.11936539187936),(int) (1E6*-21.81438446044922)));               
+	ol.addOverlay(museumOverlay, R.drawable.o_museum,12);
+	
+
+
     	return ol;
     	
     }
