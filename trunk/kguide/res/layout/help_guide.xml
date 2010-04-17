@@ -11,7 +11,7 @@
 <ScrollView  android:id="@+id/ScrollView01"
 		style="@style/helpScrollView"
 		android:layout_height="300px"
-	 	android:background="@drawable/overborder"
+	 	android:background="@drawable/round_black_transp_help"
 	>
 	
    
