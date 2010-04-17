@@ -18,6 +18,11 @@ public class HelpGuide extends Activity {
         
         webview = (WebView) findViewById(R.id.myWebview);
 	    webview.getSettings().setJavaScriptEnabled(true);
+	   
+	    webview.setBackgroundColor(0);
+	    webview.setMinimumWidth(350);
+	    //webview.setMinimumHeight(330);
+	    //webview.setPadding(10, 20, 10, 50);
 	    Log.v("HelpGuide", "Before loading file");
 	    webview.loadUrl("file:///android_asset/helpguide.html" );
 	   
