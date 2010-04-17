@@ -1,5 +1,6 @@
 package bravo.kguide.view;
 
+import android.util.Log;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -14,6 +15,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.graphics.Paint;
+
+import android.graphics.Paint.Style; 
+import android.graphics.Color;
+
+
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -44,6 +51,7 @@ import android.widget.ViewSwitcher.ViewFactory;
 import bravo.kguide.control.Controller;
 import bravo.kguide.control.OverlayList;
 import bravo.kguide.control.Routes;
+
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
@@ -114,6 +122,8 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
     public ImageButton btnNextRoute;
 
 
+    public OverlayList ol;
+
     public Button homePhoto;
 	
 
@@ -125,15 +135,19 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
     public Gallery myGallery;
 
     public boolean isZoom = false; 
+
+    public int hideNumberofblingoverlays = 0;
   
     Controller ctrl = Controller.getInstance();
     
     public Context context = this;
    
 
-    double currLat;
-    double currLong;
+    public double currLat;
+    public double currLong;
 	
+
+    
     private OurOverlay ourOverlay;
     private OurOverlay infoPoint;
     private MapOverlay playerPos;
@@ -154,11 +168,8 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 
 
 
+
     private final Handler handler = new Handler();
-    
-
-
-    
 
 
     public void activateButtons() {
@@ -248,7 +259,19 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	btnZoomOut = (ImageButton) findViewById(R.id.zoomout);
 	btnNextRoute = (ImageButton) findViewById(R.id.next_route);
 	
-
+	
+	btnOverlay.setOnClickListener(new Button.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+		    if (hideNumberofblingoverlays ==  ol.size()) {
+			hideNumberofblingoverlays = 0;
+		    }
+		    else {
+			hideNumberofblingoverlays++;
+		    }
+		    redrawOverlays();
+		}
+	    });
 
 
 	btnSettings.setOnClickListener(new Button.OnClickListener() {
@@ -288,6 +311,7 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 		@Override
 		public void onClick(View v) {
 		    mapController.zoomIn();
+		    redrawOverlays();
 		}
 	    });
 
@@ -296,6 +320,7 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 		@Override
 		public void onClick(View v) {
 		    mapController.zoomOut();
+		    redrawOverlays();
 		}
 	    });
 	
@@ -322,29 +347,12 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 			alert.show();
 		    }
 		    else {
-		    infoPoint.clear();
-		    listOfOverlays.clear();
 		    mapController.animateTo(ctrl.routeList.nextRoute().routePath.get(0).p);
-		    for (int u = 0; u < ctrl.routeList.current.routePath.size();u++) {
-			if (ctrl.routeList.current.hasMediaAtCoordinate(u)) {
-			    infoPoint.addItemNotDelete(new OurItem(ctrl.routeList.current.routePath.get(u).p,"clickable",
-								   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_TEXT],
-								   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_PHOTO],
-								   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_URL],
-								   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_AUDIO],
-								   u));
-			}
-		    }
-		    listOfOverlays.add(infoPoint);
-		    
-		    listOfOverlays.add(playerPos);
-		    
+		    redrawOverlays();
 		    routeName.setText(ctrl.routeList.current.routeName);
 		    mapController.setZoom(15);
 		    mapView.invalidate();
-		    
 		    }
-		    
 		}
 	    });
 	
@@ -543,17 +551,17 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 				    public void onAnimationRepeat(Animation animation) {
 				    }
 				});
-			    playOut.startAnimation(up);
-			    playOut.setVisibility(1);
-			    
-			    File temp = ctrl.myMedia.getAudioFile(ctrl.routeList.current.routeId, items.get(myIndex).coordinateID);
-			    Log.i("Audio name : " ,temp.getPath() + temp.getName());
-			    if (items.get(myIndex).audio != null && temp != null) {
-				
-				ctrl.ourPlayer.playAudio(temp,progressBar,elapsedTime,totalTime);
-			    }
-			    
-			    
+							    playOut.startAnimation(up);
+							    playOut.setVisibility(1);
+							    
+							    File temp = ctrl.myMedia.getAudioFile(ctrl.routeList.current.routeId, items.get(myIndex).coordinateID);
+							    Log.i("Audio name : " ,temp.getPath() + temp.getName());
+							    if (items.get(myIndex).audio != null && temp != null) {
+								
+								ctrl.ourPlayer.playAudio(temp,progressBar,elapsedTime,totalTime);
+							    }
+							    
+							    
 			}
 		    });
 		
@@ -644,31 +652,101 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 
 
 
+  
     class MapOverlay extends com.google.android.maps.Overlay {
 	private List<Bitmap> items;
 	private int animcounter;
 	private long deltaTimer;
 	private Bitmap walker = BitmapFactory.decodeResource(getResources(), R.drawable.overlay_user_walk);
 	Point screenPts;
-
 	
+	Paint myPaint = new Paint();
+	
+
+
+
 	public MapOverlay() {
 	    animcounter = 0;
 	    deltaTimer = 0;
 	    screenPts = new Point();
 
 	}
-	
         @Override
 	public void draw(Canvas canvas, MapView mapView, 
 			 boolean shadow) {
 	    super.draw(canvas, mapView, shadow);
-	    myWidget.draw(canvas, mapView, shadow);
+	    myWidget.draw(canvas, mapView,shadow);
+
 	    mapView.getProjection().toPixels(playerPosition, screenPts);
-	    canvas.drawBitmap(walker, screenPts.x-8, screenPts.y-8, null); 	    
+
+	    myPaint.setColor(Color.YELLOW);
+	    myPaint.setStrokeWidth(1); 
+	    myPaint.setStyle(Paint.Style.STROKE);
+	    canvas.drawCircle(screenPts.x, screenPts.y, 15, myPaint); 
+	    // myWidget.draw(canvas, mapView, shadow);
+	    // mapView.getProjection().toPixels(playerPosition, screenPts);
+	    // canvas.drawBitmap(walker, screenPts.x-8, screenPts.y-8, null); 
         }
     }
 
+
+    public void redrawOverlays() {
+	infoPoint.clear();
+	listOfOverlays.clear();
+	if (!ctrl.isRouteListEmpty()) {
+	    for (int u = 0; u < ctrl.routeList.current.routePath.size();u++) {
+		if (ctrl.routeList.current.hasMediaAtCoordinate(u)) {
+		    infoPoint.addItemNotDelete(new OurItem(ctrl.routeList.current.routePath.get(u).p,"clickable",
+							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_TEXT],
+							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_PHOTO],
+							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_URL],
+							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_AUDIO],
+							   u));
+		}
+	    }
+	    listOfOverlays.add(infoPoint);
+	}
+	
+	listOfOverlays.add(playerPos);
+	Log.v("Zoom-level :" ,""+  mapView.getZoomLevel()) ;
+	if ( mapView.getZoomLevel() > 10) {
+	    ol = ctrl.getSimpleOverlays(context);
+	    for (int i = hideNumberofblingoverlays; i < ol.size(); i++) {
+		listOfOverlays.add(ol.get(i));
+	    }
+	}
+	mapView.invalidate();
+    }
+
+
+
+    public void initAlbum() {
+
+	imageSwitcher = (ImageSwitcher) findViewById(R.id.imswitch);
+	imageSwitcher.setFactory(this);
+	imageSwitcher.setInAnimation(AnimationUtils.loadAnimation(this,
+								  android.R.anim.fade_in));
+	imageSwitcher.setOutAnimation(AnimationUtils.loadAnimation(this,
+								   android.R.anim.fade_out));
+	
+	
+	
+	myGallery = (Gallery) findViewById(R.id.gallery);
+	homePhoto = (Button) findViewById(R.id.photo_home);
+	homePhoto.setOnClickListener(new Button.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+		    myGal.setVisibility(8);
+		    myGal.setEnabled(false);
+		}
+	    });
+	
+	myGal = (AbsoluteLayout) findViewById(R.id.mygal);
+	myGal.setVisibility(8);
+	myGal.setEnabled(false);
+	
+	
+    }
     
     /** Called when the activity is first created. */
     @Override
@@ -692,34 +770,11 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	disableButtons();
 	routeName = (TextView) findViewById(R.id.routename);
 	routeName.setText(ctrl.routeList.current.routeName);
-	imageSwitcher = (ImageSwitcher) findViewById(R.id.imswitch);
-	imageSwitcher.setFactory(this);
-	imageSwitcher.setInAnimation(AnimationUtils.loadAnimation(this,
-								  android.R.anim.fade_in));
-	imageSwitcher.setOutAnimation(AnimationUtils.loadAnimation(this,
-								   android.R.anim.fade_out));
-
-
 	
-	myGallery = (Gallery) findViewById(R.id.gallery);
-	homePhoto = (Button) findViewById(R.id.photo_home);
-	homePhoto.setOnClickListener(new Button.OnClickListener() {
-		
-		@Override
-		public void onClick(View v) {
-		    myGal.setVisibility(8);
-		    myGal.setEnabled(false);
-		}
-	    });
 	
-	myGal = (AbsoluteLayout) findViewById(R.id.mygal);
-	myGal.setVisibility(8);
-	myGal.setEnabled(false);
-	//myGallery.setVisibility(8);
-	//homePhoto.setEnabled(false);
-	//homePhoto.setVisibility(8);
-
-
+	
+	
+	initAlbum();
 	initTopPanel();
     	initPlayer();
 	
@@ -744,37 +799,13 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	myWidget = new MapWidgets();
 	listOfOverlays = mapView.getOverlays();
 	listOfOverlays.clear();
-	// listOfOverlays.add(ourOverlay);
-	
 
 	
 	Drawable exclaim = getResources().getDrawable(R.drawable.exclaim);
 	exclaim.setBounds(0, 0, exclaim.getIntrinsicWidth(), exclaim.getIntrinsicHeight());
 	
 	infoPoint = new OurOverlay(exclaim);
-	
-
-	
-	if (!ctrl.isRouteListEmpty()) {
-	    for (int u = 0; u < ctrl.routeList.current.routePath.size();u++) {
-		if (ctrl.routeList.current.hasMediaAtCoordinate(u)) {
-		    infoPoint.addItemNotDelete(new OurItem(ctrl.routeList.current.routePath.get(u).p,"clickable",
-							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_TEXT],
-							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_PHOTO],
-							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_URL],
-							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_AUDIO],
-							   u));
-		}
-	    }
-	}
-	listOfOverlays.add(playerPos);
-	listOfOverlays.add(infoPoint);
-	
-	
-	OverlayList ol = ctrl.getSimpleOverlays(context);
-	while(ol.hasNext()){
-		listOfOverlays.add(ol.next());
-	}
+	redrawOverlays();
 	mapView.invalidate();
 	//End Display Map           
 	
@@ -849,24 +880,8 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 		break;
 	    }
 
-	    infoPoint.clear();
-	    listOfOverlays.clear();
-	    mapController.animateTo(ctrl.routeList.nextRoute().routePath.get(0).p);
-	    for (int u = 0; u < ctrl.routeList.current.routePath.size();u++) {
-		if (ctrl.routeList.current.hasMediaAtCoordinate(u)) {
-		    infoPoint.addItemNotDelete(new OurItem(ctrl.routeList.current.routePath.get(u).p,"clickable",
-							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_TEXT],
-							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_PHOTO],
-							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_URL],
-							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_AUDIO],
-							   u));
-		}
-	    }
-	    listOfOverlays.add(infoPoint);
-	    listOfOverlays.add(playerPos);
-	    
-
-		routeName.setText(ctrl.routeList.current.routeName);
+	    redrawOverlays();
+	    routeName.setText(ctrl.routeList.current.routeName);
 	    mapController.setZoom(15);
 	    this.mapView.invalidate();
 	    break;

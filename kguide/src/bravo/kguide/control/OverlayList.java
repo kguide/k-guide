@@ -17,7 +17,7 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
 public class OverlayList  {
-	
+    
 	public ArrayList<Overlay> overlays;
 	public ListIterator<Overlay> overlayIterator;
 	private Context context;
@@ -52,6 +52,23 @@ public class OverlayList  {
 		return overlays.get(overlayIndex);		
 	}
 	
+    	public Overlay get(int index){
+		if(overlays.isEmpty() || index < 0){
+			return null;
+		}
+		
+		if(index > overlays.size()-1){
+			return null;
+		}
+		overlayIndex = index;
+		return overlays.get(overlayIndex);		
+	}
+
+        public int size() {
+	    return overlays.size();
+	}
+	
+
 	public boolean hasNext(){
 		if(overlayIndex == overlays.size()-1){
 			return false;
@@ -62,6 +79,8 @@ public class OverlayList  {
 	public void gotoBegining(){
 		overlayIndex = 0;
 	}
+
+    
     private class InfoOverlay extends com.google.android.maps.Overlay {
 		private Bitmap overlayBitmap;
 		private GeoPoint playerloc;

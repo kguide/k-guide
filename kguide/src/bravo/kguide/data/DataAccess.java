@@ -18,15 +18,15 @@ public class DataAccess {
 		Log.v("DAL","Initializing routeDB done");
 	}
 	
-	private void insertRoute(int routeId,String routeJson){
+	private void insertRoute(int routeId,String routeJson) {
 		routeDB.insertRoute(routeId, routeJson);
 	}
 	
-	public boolean existsRoute(int routeId){
+	public boolean existsRoute(int routeId) {
 		return routeDB.existsRoute(routeId);
 	}
 	
-	public void closeDatabase(){
+	public void closeDatabase() {
 		routeDB.closeDatabase();
 	}
 	
