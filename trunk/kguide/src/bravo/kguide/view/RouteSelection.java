@@ -48,7 +48,6 @@ public class RouteSelection extends ListActivity {
     @Override
     public void onContentChanged () {
 	super.onContentChanged();
-	Log.v("lol ","lol2");
     }
 
     @Override
@@ -78,8 +77,9 @@ public class RouteSelection extends ListActivity {
 		}
 	    });		
 	
-
+		Log.v("registerForContextMenu","");
 	registerForContextMenu(listView);
+	Log.v("populateview","");
 	populateListView();
     }
 	
