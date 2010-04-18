@@ -1,13 +1,12 @@
 package bravo.kguide.data;
 
+import java.util.Scanner;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
-import bravo.kguide.control.OverlayList;
 import bravo.kguide.control.RouteList;
 import bravo.kguide.control.Routes;
-
-import com.google.android.maps.Overlay;
 
 public class DataAccess {
 	private static RouteDB routeDB;
@@ -50,7 +49,7 @@ public class DataAccess {
 		if(!this.existsRoute(routeId)){
 			Log.v("DAL","Get route from server");
     		jsonReply = ServerConnection.getRouteFromServer(routeId);
-    		Log.v("DAL","Route has been retrived");
+    		Log.i("DAL","Route retrieved jsonreply: "+jsonReply);
     		this.insertRoute(routeId, jsonReply);
     		Routes route = constructRoute(routeId);
     		if(storeMedia){
@@ -71,6 +70,7 @@ public class DataAccess {
 	 * @return
 	 */
 	private boolean downloadMedia(Routes route, String storeLocation){
+		Log.i("DAL","downloadMedia called");
 		int routeId = route.routeId;
 		MediaHandler mh = new MediaHandler();
     	for(int i=0;i<route.routePath.size();i++){
@@ -81,7 +81,19 @@ public class DataAccess {
 	    		}
 	    		
 	    		if(media[RouteDB.MEDIA_ARRAY_PHOTO] != null){
-	    			mh.storeFile(media[RouteDB.MEDIA_ARRAY_PHOTO], storeLocation, MediaHandler.PHOTO_MEDIA_DIR, routeId, i);
+	    			//donwload all image files, the urls are seperated with #
+	    			Log.i("DAL","Photo download list:"+media[RouteDB.MEDIA_ARRAY_PHOTO]);
+	    			Scanner scan = new Scanner(media[RouteDB.MEDIA_ARRAY_PHOTO]);
+	    			scan.useDelimiter("#");
+	    			while(scan.hasNext()){
+	    				String downloadUrl = scan.next();
+	    				Log.i("DAL","Now downloading: "+downloadUrl);
+	    				if(mh.storeFile(downloadUrl, storeLocation, MediaHandler.PHOTO_MEDIA_DIR, routeId, i))
+	    					Log.i("DAL","Downloading SUCCESS");
+	    				else
+	    					Log.i("DAL","Downloading FAILED");
+	    			}
+	    			//mh.storeFile(media[RouteDB.MEDIA_ARRAY_PHOTO], storeLocation, MediaHandler.PHOTO_MEDIA_DIR, routeId, i);
 	    		}
     	}
     	return true;
