@@ -155,6 +155,7 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
     private OurOverlay ourOverlay;
     private OurOverlay infoPoint;
     private MapOverlay playerPos;
+    private int blinkCounter;
 
     private MapWidgets myWidget;
     
@@ -355,6 +356,7 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 		    }
 		    else {
 			mapController.animateTo(ctrl.routeList.nextRoute().routePath.get(0).p);
+			blinkCounter = 0;
 			redrawOverlays();
 			routeName.setText(ctrl.routeList.current.routeName);
 			mapController.setZoom(15);
@@ -726,9 +728,14 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	public boolean draw(Canvas canvas, MapView mapView, 
 			    boolean shadow, long when)  {
             super.draw(canvas, mapView, shadow);
-	    if (animcounter < 5) {
+
+	    if (blinkCounter < 50 && animcounter < 5) {
+		blinkCounter++;
+	    }
+	    else {
 		myWidget.draw(canvas, mapView,shadow);
 	    }
+
 	    myPaint.setStrokeWidth(2); 
 	    myPaint.setStyle(Paint.Style.STROKE); 
 	    mapView.getProjection().toPixels(playerPosition, screenPts);
@@ -893,10 +900,11 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	
 	Drawable exclaim = getResources().getDrawable(R.drawable.exclaim);
 	exclaim.setBounds(0, 0, exclaim.getIntrinsicWidth(), exclaim.getIntrinsicHeight());
-	
+
 	infoPoint = new OurOverlay(exclaim);
-	ctrl.routeList.lastRoute(); //Select the route that was selected last
+	//ctrl.routeList.lastRoute(); //Select the route that was selected last
 	redrawOverlays();
+	routeName.setText(ctrl.routeList.current.routeName);
 	mapView.invalidate();
 	//End Display Map           
 	
@@ -968,9 +976,11 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 		break;
 	    }
 	    mapController.animateTo(ctrl.routeList.nextRoute().routePath.get(0).p);
+	    blinkCounter = 0;
 	    redrawOverlays();
 	    routeName.setText(ctrl.routeList.current.routeName);
 	    mapController.setZoom(15);
+	    
 	    this.mapView.invalidate();
 	    break;
 	    

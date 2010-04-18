@@ -20,13 +20,13 @@
        android:id="@+id/gallery" 
        android:background="#FF333333"
        android:layout_width="fill_parent" 
-       android:layout_height="100px" 
+       android:layout_height="75px" 
        android:gravity="top"
        /> 
     <ImageSwitcher
        android:id="@+id/imswitch" 
        android:layout_width="fill_parent" 
-       android:layout_height="275px"                 
+       android:layout_height="300px"                 
        android:layout_alignParentLeft="true" 
        android:layout_alignParentRight="true" 
        android:layout_alignParentBottom="true"    
