@@ -27,7 +27,7 @@ public class RouteSelection extends ListActivity {
     Context context = this;
     
     private ListView listView;
-    private int limit=10,offset=0;
+    private int limit=100,offset=0;
     public ArrayList<Routes> routeList;
     
     //### Indexes for the Options menu buttons ####/
