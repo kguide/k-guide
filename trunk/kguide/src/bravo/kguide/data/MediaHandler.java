@@ -88,10 +88,11 @@ public class MediaHandler {
 		}
 		
 		this.storeDirectory = basePathConst+mediaTypeConst+routeId+"/"+coordinateId+"/";
-		
+		fileName = extractFilenameFromUrl(connectionString);
 		//return immediately if the file already exists
 		File destination = new File(this.storeDirectory+this.fileName);
 		if(destination.exists()){
+			Log.i("MediaHandler","File already exists:"+this.fileName);
 			return true;
 		}
 
@@ -109,7 +110,7 @@ public class MediaHandler {
 
 		// Extract the filename from the url
 		
-		fileName = extractFilenameFromUrl(connectionString);
+		
 		/*
 		fileName = new StringBuffer(connectionString).reverse().toString();
 		fileName = fileName.substring(0,fileName.indexOf("/"));
