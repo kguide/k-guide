@@ -77,7 +77,7 @@ public class RouteSelection extends ListActivity {
 		}
 	    });		
 	
-		Log.v("registerForContextMenu","");
+	Log.v("registerForContextMenu","");
 	registerForContextMenu(listView);
 	Log.v("populateview","");
 	populateListView();

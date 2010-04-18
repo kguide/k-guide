@@ -6,6 +6,9 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.net.Uri;
+
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -180,7 +183,7 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	audioButt.setVisibility(1);
 	homeButt.setEnabled(true);
 	homeButt.setVisibility(1);
-	urlButt.setEnabled(false);
+	urlButt.setEnabled(true);
 	urlButt.setVisibility(1);
 	photoButt.setEnabled(true);
 	photoButt.setVisibility(1);
@@ -260,6 +263,8 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	btnNextRoute = (ImageButton) findViewById(R.id.next_route);
 	
 	
+	btnSettings.setEnabled(false);
+
 	btnOverlay.setOnClickListener(new Button.OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -430,11 +435,34 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	protected String url   = null;
 	protected int coordinateID;
 	
-	public OurItem(GeoPoint point, String title, String snippet, String audio, String photo, String url,int coordinateID)  {
+
+	public OurItem(GeoPoint point, String title, String snippet, String photo, String url, String audio,int coordinateID)  {
+
 	    super( point,  title, snippet);
-	    this.audio = audio;
-	    this.photo = photo;
-	    this.url = url;
+
+	    if (audio != null && audio.length() != 0) {
+		this.audio = audio;
+	    }
+	    else {
+		this.audio = null;
+	    }
+
+	    if (photo != null && photo.length() != 0) {
+		this.photo = photo;
+	    }
+	    else {
+		this.photo = null;
+	    }
+
+
+	    if (url != null && url.length() != 0) {
+		this.url = url;
+	    }
+	    else {
+		this.url = null;
+	    }
+	    
+	    
 	    this.coordinateID = coordinateID;
 	}
 	
@@ -453,6 +481,12 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	    if  (this.photo == null) {return false;}
 	    return this.photo.length() != 0;
 	}
+	
+	protected boolean hasText() {
+	    if  ( this.getSnippet() == null) {return false;}
+	    return this.getSnippet().length() != 0;
+	}
+
 	
     }
     
@@ -491,19 +525,31 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 		if (!items.get(pIndex).hasAudio()) {audioButt.setEnabled(false);audioButt.setVisibility(8);}
 		if (!items.get(pIndex).hasPhoto()) {photoButt.setEnabled(false);photoButt.setVisibility(8);}
 		if (!items.get(pIndex).hasUrl()) {urlButt.setEnabled(false);urlButt.setVisibility(8);}
+		if (!items.get(pIndex).hasText()) {textButt.setEnabled(false);textButt.setVisibility(8);}
+
 
 		
 		
 		homeButt.setOnClickListener(new Button.OnClickListener() {
-			
                         @Override
                         public void onClick(View v) {
 			    disableButtons();
 			    restorePanAndZoom();
-		
 			}
 		    });
 		
+
+		urlButt.setOnClickListener(new Button.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+			    Log.v("Media url value :",items.get(myIndex).url);
+			    Log.v("Media photo value :",items.get(myIndex).photo);
+			    Log.v("Media audio value :",items.get(myIndex).audio);
+			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(items.get(myIndex).url))); 
+			}
+		    });
+		
+
 		
 		audioButt.setOnClickListener(new Button.OnClickListener() {
 			@Override
@@ -557,7 +603,6 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 							    File temp = ctrl.myMedia.getAudioFile(ctrl.routeList.current.routeId, items.get(myIndex).coordinateID);
 							    Log.i("Audio name : " ,temp.getPath() + temp.getName());
 							    if (items.get(myIndex).audio != null && temp != null) {
-								
 								ctrl.ourPlayer.playAudio(temp,progressBar,elapsedTime,totalTime);
 							    }
 							    
@@ -702,6 +747,7 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_URL],
 							   ctrl.routeList.current.routePath.get(u).mediaArray[Routes.MEDIA_AUDIO],
 							   u));
+
 		}
 	    }
 	    listOfOverlays.add(infoPoint);
