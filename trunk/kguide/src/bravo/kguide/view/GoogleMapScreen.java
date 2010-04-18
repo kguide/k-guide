@@ -869,9 +869,14 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	// Get the first coordinate and move the map to it.
 	//******************************************************************************************************
 	// Nord, endurmennt
-	playerPosition = initGPS();
-	//new GeoPoint((int) ( 64.13976253758364  * 1E6), 
-	//			      (int) ( -21.95570468902588 * 1E6));
+	try {
+	    playerPosition = initGPS();
+	} catch (Exception e) {
+	    playerPosition =(new GeoPoint((int) ( 64.13976253758364  * 1E6),  (int) ( -21.95570468902588 * 1E6)));
+	}
+	
+	
+
 	
 	
 
