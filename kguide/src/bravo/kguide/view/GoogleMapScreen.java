@@ -468,23 +468,26 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	
 	protected boolean hasAudio() {
 	    if  (this.audio == null) {return false;}
-	    return this.audio.length() != 0;
+	    return this.audio.length() > 4;
 	}
 	
 	protected boolean hasUrl() {
-	    if  (this.url == null) {return false;}
-	    return this.url.length() != 0;
+	    if  (this.url == "" || this.url == null) {	    
+		Log.v("is NULL ", ""+this.url);
+		return false;
+	    }
+	    return this.url.length() > 4;
 	    
 	}
 	
 	protected boolean hasPhoto() {
 	    if  (this.photo == null) {return false;}
-	    return this.photo.length() != 0;
+	    return this.photo.length() > 4;
 	}
 	
 	protected boolean hasText() {
 	    if  ( this.getSnippet() == null) {return false;}
-	    return this.getSnippet().length() != 0;
+	    return this.getSnippet().length() > 1;
 	}
 
 	
@@ -542,10 +545,12 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 		urlButt.setOnClickListener(new Button.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-			    Log.v("Media url value :",items.get(myIndex).url);
-			    Log.v("Media photo value :",items.get(myIndex).photo);
-			    Log.v("Media audio value :",items.get(myIndex).audio);
-			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(items.get(myIndex).url))); 
+			    try {
+				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(items.get(myIndex).url))); 
+			    } catch (Exception e) {
+				
+			    }
+			    
 			}
 		    });
 		
@@ -597,15 +602,24 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 				    public void onAnimationRepeat(Animation animation) {
 				    }
 				});
-							    playOut.startAnimation(up);
-							    playOut.setVisibility(1);
+
+							    File temp1 = ctrl.myMedia.getAudioFile(ctrl.routeList.current.routeId, items.get(myIndex).coordinateID);
 							    
-							    File temp = ctrl.myMedia.getAudioFile(ctrl.routeList.current.routeId, items.get(myIndex).coordinateID);
-							    Log.i("Audio name : " ,temp.getPath() + temp.getName());
-							    if (items.get(myIndex).audio != null && temp != null) {
-								ctrl.ourPlayer.playAudio(temp,progressBar,elapsedTime,totalTime);
+							    
+							    List<String> tFileList = new ArrayList<String>();
+							    
+							    File[] files=temp1.listFiles();
+							    Log.v("audio : ", ""+files);
+							    if (files.length != 0) {
+								playOut.startAnimation(up);
+								playOut.setVisibility(1);
+								
+								File temp = ctrl.myMedia.getAudioFile(ctrl.routeList.current.routeId, items.get(myIndex).coordinateID);
+								Log.v("Audio file: ", ""+temp);
+								if (items.get(myIndex).audio != null && temp != null) {
+								    ctrl.ourPlayer.playAudio(temp,progressBar,elapsedTime,totalTime);
+								}
 							    }
-							    
 							    
 			}
 		    });
@@ -616,33 +630,35 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
                         public void onClick(View v) {
 			    File temp = ctrl.myMedia.getPhotoDirectory(ctrl.routeList.current.routeId, items.get(myIndex).coordinateID);
 			    
-			    Log.i("PhotoDir name : " ,temp.getPath());
+			    
 			    if (items.get(myIndex).photo != null && temp != null) {
 				List<String> tFileList = new ArrayList<String>();
-				
+				Log.v("Photo check", ""+items.get(myIndex).photo);
 				File[] files=temp.listFiles();
-				
-				for(int i=0; i<files.length; i++) {
-				    File file = files[i];
-				    tFileList.add(file.getPath());
+				Log.v("photos : ", ""+files.length);
+				if (files.length != 0) {
+				    for(int i=0; i<files.length; i++) {
+					File file = files[i];
+					tFileList.add(file.getPath());
+				    }
+				    
+				    myViewer = new PhotoViewer(context,tFileList);
+				    
+				    myGallery.setAdapter(myViewer);
+				    myGal.setVisibility(1);
+				    myGal.setEnabled(true);
+				    imageSwitcher.setImageDrawable(null);
+				    myGallery.setOnItemClickListener(new OnItemClickListener() 
+					{
+					    public void onItemClick(AdapterView parent, 
+								    View v, int position, long id) { 
+						Log.i("drawable name : " , (new BitmapDrawable(myViewer.myBitmap)).toString());
+						imageSwitcher.setEnabled(true);
+						imageSwitcher.setVisibility(1);
+						imageSwitcher.setImageDrawable(new BitmapDrawable(myViewer.fileList.get(position).toString()));
+					    }
+					});
 				}
-				
-				myViewer = new PhotoViewer(context,tFileList);
-				
-				myGallery.setAdapter(myViewer);
-				myGal.setVisibility(1);
-				myGal.setEnabled(true);
-				imageSwitcher.setImageDrawable(null);
-				myGallery.setOnItemClickListener(new OnItemClickListener() 
-				    {
-					public void onItemClick(AdapterView parent, 
-								View v, int position, long id) { 
-					    Log.i("drawable name : " , (new BitmapDrawable(myViewer.myBitmap)).toString());
-					    imageSwitcher.setEnabled(true);
-					    imageSwitcher.setVisibility(1);
-					    imageSwitcher.setImageDrawable(new BitmapDrawable(myViewer.fileList.get(position).toString()));
-					}
-				    });
 			    }
 			}
 		    });
