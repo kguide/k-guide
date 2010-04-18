@@ -29,6 +29,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.Criteria;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
@@ -159,6 +160,7 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
     
     private LocationManager locationManager=null;
     private LocationListener locationListener=null;
+    private String myProvider;
 
     private MapView mapView; 
     private MapController mapController;
@@ -352,11 +354,11 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 			alert.show();
 		    }
 		    else {
-		    mapController.animateTo(ctrl.routeList.nextRoute().routePath.get(0).p);
-		    redrawOverlays();
-		    routeName.setText(ctrl.routeList.current.routeName);
-		    mapController.setZoom(15);
-		    mapView.invalidate();
+			mapController.animateTo(ctrl.routeList.nextRoute().routePath.get(0).p);
+			redrawOverlays();
+			routeName.setText(ctrl.routeList.current.routeName);
+			mapController.setZoom(15);
+			mapView.invalidate();
 		    }
 		}
 	    });
@@ -603,24 +605,16 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 				    }
 				});
 
-							    File temp1 = ctrl.myMedia.getAudioFile(ctrl.routeList.current.routeId, items.get(myIndex).coordinateID);
+
+							    playOut.startAnimation(up);
+							    playOut.setVisibility(1);
 							    
-							    
-							    List<String> tFileList = new ArrayList<String>();
-							    
-							    File[] files=temp1.listFiles();
-							    Log.v("audio : ", ""+files);
-							    if (files.length != 0) {
-								playOut.startAnimation(up);
-								playOut.setVisibility(1);
-								
-								File temp = ctrl.myMedia.getAudioFile(ctrl.routeList.current.routeId, items.get(myIndex).coordinateID);
-								Log.v("Audio file: ", ""+temp);
-								if (items.get(myIndex).audio != null && temp != null) {
-								    ctrl.ourPlayer.playAudio(temp,progressBar,elapsedTime,totalTime);
-								}
+							    File temp = ctrl.myMedia.getAudioFile(ctrl.routeList.current.routeId, items.get(myIndex).coordinateID);
+							    Log.v("Audio file: ", ""+temp);
+							    if (items.get(myIndex).audio != null && temp != null) {
+								ctrl.ourPlayer.playAudio(temp,progressBar,elapsedTime,totalTime);
 							    }
-							    
+								
 			}
 		    });
 		
@@ -723,37 +717,48 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	
 	Paint myPaint = new Paint();
 	
-
-
-
 	public MapOverlay() {
 	    animcounter = 0;
 	    deltaTimer = 0;
 	    screenPts = new Point();
-
 	}
         @Override
-	public void draw(Canvas canvas, MapView mapView, 
-			 boolean shadow) {
-	    super.draw(canvas, mapView, shadow);
-	    myWidget.draw(canvas, mapView,shadow);
-
+	public boolean draw(Canvas canvas, MapView mapView, 
+			    boolean shadow, long when)  {
+            super.draw(canvas, mapView, shadow);
+	    if (animcounter < 5) {
+		myWidget.draw(canvas, mapView,shadow);
+	    }
+	    myPaint.setStrokeWidth(2); 
+	    myPaint.setStyle(Paint.Style.STROKE); 
 	    mapView.getProjection().toPixels(playerPosition, screenPts);
+	    myPaint.setAntiAlias(true);
+	    for (int i = 0; i<3; i++) {
+		myPaint.setARGB(255-i*50,255,animcounter*15,animcounter*15); 
 
-	    myPaint.setColor(Color.YELLOW);
-	    myPaint.setStrokeWidth(1); 
-	    myPaint.setStyle(Paint.Style.STROKE);
-	    canvas.drawCircle(screenPts.x, screenPts.y, 15, myPaint); 
-	    // myWidget.draw(canvas, mapView, shadow);
-	    // mapView.getProjection().toPixels(playerPosition, screenPts);
-	    // canvas.drawBitmap(walker, screenPts.x-8, screenPts.y-8, null); 
+		canvas.drawCircle(screenPts.x, screenPts.y, (animcounter*i*2), myPaint); 
+	    }
+            if (deltaTimer > when ) return true;
+            animcounter++;
+            animcounter = animcounter % 9;
+            deltaTimer = when + 80;
+            return true;
         }
     }
-
+    
 
     public void redrawOverlays() {
 	infoPoint.clear();
 	listOfOverlays.clear();
+
+	Log.v("Zoom-level :" ,""+  mapView.getZoomLevel()) ;
+	if ( mapView.getZoomLevel() > 10) {
+	    ol = ctrl.getSimpleOverlays(context);
+	    for (int i = hideNumberofblingoverlays; i < ol.size(); i++) {
+		listOfOverlays.add(ol.get(i));
+	    }
+	}
+
 	if (!ctrl.isRouteListEmpty()) {
 	    for (int u = 0; u < ctrl.routeList.current.routePath.size();u++) {
 		if (ctrl.routeList.current.hasMediaAtCoordinate(u)) {
@@ -769,14 +774,9 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	    listOfOverlays.add(infoPoint);
 	}
 	
+
+
 	listOfOverlays.add(playerPos);
-	Log.v("Zoom-level :" ,""+  mapView.getZoomLevel()) ;
-	if ( mapView.getZoomLevel() > 10) {
-	    ol = ctrl.getSimpleOverlays(context);
-	    for (int i = hideNumberofblingoverlays; i < ol.size(); i++) {
-		listOfOverlays.add(ol.get(i));
-	    }
-	}
 	mapView.invalidate();
     }
 
@@ -808,6 +808,25 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	myGal.setEnabled(false);
 	
 	
+    }
+
+
+    public GeoPoint initGPS() {
+	locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+	
+	// List providers
+	List<String> providers = locationManager.getAllProviders();
+	for (String provider : providers) {
+	    Log.v("Providers",provider);
+	}
+	
+	Criteria criteria = new Criteria();
+	myProvider = locationManager.getBestProvider(criteria, false);
+	locationListener = new MyLocationListener();
+	Location location = locationManager.getLastKnownLocation(myProvider);
+	
+	locationManager.requestLocationUpdates(myProvider, 15000, 10,locationListener );
+	return (new GeoPoint((int) (location.getLatitude() * 1E6), (int) ( location.getLongitude()* 1E6)));
     }
     
     /** Called when the activity is first created. */
@@ -842,9 +861,20 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	
 	// Get the first coordinate and move the map to it.
 	//******************************************************************************************************
-	// Central reykjavik.
-	playerPosition = new GeoPoint((int) (64.13674367070412 * 1E6), 
-				      (int) (-21.923303604125977 * 1E6));
+	// Nord, endurmennt
+	playerPosition = initGPS();
+	//new GeoPoint((int) ( 64.13976253758364  * 1E6), 
+	//			      (int) ( -21.95570468902588 * 1E6));
+	
+	
+
+
+
+	
+
+
+	
+	
 	
 	mapController.animateTo(playerPosition);
 	mapController.setZoom(15);
@@ -856,8 +886,6 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	//----------------------------------------------------------------------------------------------------------
 	playerPos = new MapOverlay();
 	
-	// ourOverlay.addItem(new OverlayItem(p,"hint",controller.game.getCurrentHintText()));
-	
 	myWidget = new MapWidgets();
 	listOfOverlays = mapView.getOverlays();
 	listOfOverlays.clear();
@@ -867,14 +895,12 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	exclaim.setBounds(0, 0, exclaim.getIntrinsicWidth(), exclaim.getIntrinsicHeight());
 	
 	infoPoint = new OurOverlay(exclaim);
+	ctrl.routeList.lastRoute(); //Select the route that was selected last
 	redrawOverlays();
 	mapView.invalidate();
 	//End Display Map           
 	
-	// Set up the location listener to listen for new GPS locations
-	locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-	locationListener = new MyLocationListener();
-	locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 100,locationListener);
+
     }
     
     private class MyLocationListener implements LocationListener {
@@ -941,7 +967,7 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 		alert.show();
 		break;
 	    }
-
+	    mapController.animateTo(ctrl.routeList.nextRoute().routePath.get(0).p);
 	    redrawOverlays();
 	    routeName.setText(ctrl.routeList.current.routeName);
 	    mapController.setZoom(15);

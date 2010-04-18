@@ -53,7 +53,15 @@ public class RouteList {
 		current = routes.get(routeIndex);
     }
 
-    public void getCurrent(){
+    public void lastRoute(){
+	if (routes.isEmpty())  {
+	    current = null;
+	}
+	routeIndex = routes.size()-1;
+	current = routes.get(routeIndex);
+    }
+
+   public void getCurrent(){
 	if (routes == null) {
 	    return;
 	}
