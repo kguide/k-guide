@@ -1,5 +1,6 @@
 package bravo.kguide.view;
 
+import android.util.Log;
 import bravo.kguide.control.Controller;
 import java.util.ArrayList;
 
@@ -64,12 +65,10 @@ public class MapWidgets extends com.google.android.maps.Overlay {
 		    }
 		    myPaint.setStyle(Paint.Style.STROKE); 
 		    myPaint.setARGB(255,0,0,0); 
-		    myPaint.setAntiAlias(true);
-		    myPaint.setTextSize(22); 
+		    myPaint.setAntiAlias(false);
 		    myPaint.setStyle(Style.FILL);
-		    
+		    ourMap.getProjection().toPixels(ctrl.routeList.current.routePath.get(0).p, mp1);		
 		    for (int u = 1; u < ctrl.routeList.current.routePath.size();u++) {
-			ourMap.getProjection().toPixels(ctrl.routeList.current.routePath.get(u-1).p, mp1);		
 			ourMap.getProjection().toPixels(ctrl.routeList.current.routePath.get(u).p, mp2);
 			myPaint.setColor(Color.BLUE);
 			myPaint.setStrokeWidth(1); 
@@ -78,17 +77,11 @@ public class MapWidgets extends com.google.android.maps.Overlay {
 			
 			myPaint.setStrokeWidth(6); 
 			ourCanvas.drawLine(mp1.x,mp1.y,mp2.x,mp2.y,myPaint);
-		    }
-		    
-		    for (int u = 1; u < ctrl.routeList.current.routePath.size();u++) {
-			ourMap.getProjection().toPixels(ctrl.routeList.current.routePath.get(u-1).p, mp1);		
-			ourMap.getProjection().toPixels(ctrl.routeList.current.routePath.get(u).p, mp2);
 			myPaint.setStrokeWidth(2); 
 			myPaint.setColor(Color.YELLOW);
 			ourCanvas.drawLine(mp1.x,mp1.y,mp2.x,mp2.y,myPaint);
+			mp1.set(mp2.x,mp2.y);
 		    }
-		    
-		    
 		}
 	    });
 

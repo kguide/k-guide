@@ -90,19 +90,23 @@ public class OverlayList  {
 		
 		public InfoOverlay(ArrayList<GeoPoint> locations, Bitmap bitmap,int powerOfTwoSize) {
 		    
-			screenPts = new Point();
-			this.locations = locations;
-			overlayBitmap = bitmap;
+		    screenPts = new Point();
+		    this.locations = locations;
+		    overlayBitmap = bitmap;
 		    pixelSize = powerOfTwoSize;
 		    
 		}
 		
 	    @Override
 		public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-		    super.draw(canvas, mapView, shadow);
+		    super.draw(canvas, mapView, false);
 		    for(int i=0;i<locations.size();i++){
 		    	playerloc = locations.get(i);
 		    	mapView.getProjection().toPixels(playerloc, screenPts);
+			if (screenPts.x  <  -16) continue;
+			if (screenPts.y  <  -16) continue;
+			if (screenPts.x  >  336) continue;
+			if (screenPts.y  >  496) continue;
 		    	canvas.drawBitmap(overlayBitmap, screenPts.x-pixelSize, screenPts.y-pixelSize, null);
 		    }
 	    }
