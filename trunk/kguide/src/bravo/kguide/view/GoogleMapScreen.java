@@ -76,7 +76,7 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
     public View makeView() {
         ImageView imageView = new ImageView(this);
         imageView.setBackgroundColor(0xFF000000);
-        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         imageView.setLayoutParams(new 
                 ImageSwitcher.LayoutParams(
                         LayoutParams.FILL_PARENT,
@@ -155,6 +155,8 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
     private OurOverlay ourOverlay;
     private OurOverlay infoPoint;
     private MapOverlay playerPos;
+    private MapOverlayWidget widgetOverlay;
+
     private int blinkCounter;
 
     private MapWidgets myWidget;
@@ -517,7 +519,7 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	
 	@Override
 	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-	    super.draw(canvas, mapView, shadow);
+	    super.draw(canvas, mapView, false);
 	    boundCenterBottom(marker);
 	}
 	
@@ -711,10 +713,8 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 
   
     class MapOverlay extends com.google.android.maps.Overlay {
-	private List<Bitmap> items;
 	private int animcounter;
 	private long deltaTimer;
-	private Bitmap walker = BitmapFactory.decodeResource(getResources(), R.drawable.overlay_user_walk);
 	Point screenPts;
 	
 	Paint myPaint = new Paint();
@@ -723,40 +723,58 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	    animcounter = 0;
 	    deltaTimer = 0;
 	    screenPts = new Point();
+	    myPaint.setStrokeWidth(2); 
+	    myPaint.setStyle(Paint.Style.STROKE); 
+	   
+	    myPaint.setAntiAlias(false);
 	}
         @Override
 	public boolean draw(Canvas canvas, MapView mapView, 
 			    boolean shadow, long when)  {
-            super.draw(canvas, mapView, shadow);
-
-	    if (blinkCounter < 50 && animcounter < 5) {
-		blinkCounter++;
-	    }
-	    else {
-		myWidget.draw(canvas, mapView,shadow);
-	    }
-
-	    myPaint.setStrokeWidth(2); 
-	    myPaint.setStyle(Paint.Style.STROKE); 
+            super.draw(canvas, mapView, false);
+	   
 	    mapView.getProjection().toPixels(playerPosition, screenPts);
-	    myPaint.setAntiAlias(true);
+	    if (screenPts.x  <  0) return false;
+	    if (screenPts.y  <  0) return false;
+	    if (screenPts.x  >  330) return false;
+	    if (screenPts.y  >  510) return false;
+
+
 	    for (int i = 0; i<3; i++) {
-		myPaint.setARGB(255-i*50,255,animcounter*15,animcounter*15); 
+		myPaint.setARGB(255-(i*82),255,animcounter*15,animcounter*15); 
 
 		canvas.drawCircle(screenPts.x, screenPts.y, (animcounter*i*2), myPaint); 
 	    }
-            if (deltaTimer > when ) return true;
+	    if (deltaTimer > when ) return true;
             animcounter++;
-            animcounter = animcounter % 9;
-            deltaTimer = when + 80;
+            animcounter = animcounter % 10;
+            deltaTimer = when + 120;
             return true;
         }
     }
+
+    class MapOverlayWidget extends com.google.android.maps.Overlay {
+	public MapOverlayWidget() {
+	}
+        @Override
+	public void draw(Canvas canvas, MapView mapView, 
+			    boolean shadow)  {
+            super.draw(canvas, mapView, false);
+	    myWidget.draw(canvas, mapView,false);
+	    return;
+        }
+    }
+
     
 
     public void redrawOverlays() {
 	infoPoint.clear();
 	listOfOverlays.clear();
+	
+	if ( mapView.getZoomLevel() > 12) {
+	    listOfOverlays.add(widgetOverlay);
+	}
+
 
 	Log.v("Zoom-level :" ,""+  mapView.getZoomLevel()) ;
 	if ( mapView.getZoomLevel() > 10) {
@@ -765,7 +783,7 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 		listOfOverlays.add(ol.get(i));
 	    }
 	}
-
+	listOfOverlays.add(playerPos);
 	if (!ctrl.isRouteListEmpty()) {
 	    for (int u = 0; u < ctrl.routeList.current.routePath.size();u++) {
 		if (ctrl.routeList.current.hasMediaAtCoordinate(u)) {
@@ -782,8 +800,8 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	}
 	
 
+	
 
-	listOfOverlays.add(playerPos);
 	mapView.invalidate();
     }
 
@@ -897,8 +915,10 @@ public class GoogleMapScreen extends MapActivity implements ViewFactory
 	// Add icon for first coordinate location 
 	//----------------------------------------------------------------------------------------------------------
 	playerPos = new MapOverlay();
+
 	
 	myWidget = new MapWidgets();
+	widgetOverlay = new MapOverlayWidget();
 	listOfOverlays = mapView.getOverlays();
 	listOfOverlays.clear();
 
