@@ -70,8 +70,8 @@ public class StartView extends Activity {
 	    ImageButton settings = (ImageButton)findViewById(R.id.v_main_b04_settings);
 	    settings.setOnClickListener(new ImageButton.OnClickListener(){
 	    	public void onClick(View v){
-	    		Intent startSettingsScreen = new Intent(StartView.this,SettingsScreen.class);
-	    		startActivity(startSettingsScreen);
+		    //	Intent startSettingsScreen = new Intent(StartView.this,SettingsScreen.class);
+		    //	startActivity(startSettingsScreen);
 	    	}
 	    });
 	    
