@@ -52,8 +52,8 @@ public class PhotoViewer extends BaseAdapter {
 	myBitmap = BitmapFactory.decodeFile(fileList.get(position).toString());
 	i.setImageBitmap(myBitmap);
 	i.setAdjustViewBounds(true);
-	i.setLayoutParams(new Gallery.LayoutParams(70, 75));
-        i.setScaleType(ImageView.ScaleType.FIT_XY);
+	i.setLayoutParams(new Gallery.LayoutParams(90, 75));
+        i.setScaleType(ImageView.ScaleType.CENTER_CROP);
 	return i; 
     } 
     
